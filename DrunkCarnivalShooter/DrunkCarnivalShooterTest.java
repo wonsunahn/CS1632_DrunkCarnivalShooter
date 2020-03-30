@@ -26,14 +26,13 @@ public class DrunkCarnivalShooterTest {
 	public void setUp() {
 		targets = new boolean[4];
 		/*
-		 * TODO: Use the Java Path Finder Verify API to generate choices for targetChoice.
-		 * It should take values 0-3.  To see how to use the Verify API, look at:
+		 * TODO: Use the Java Path Finder Verify.getInt(int min, int max) API to
+		 * generate choices for targetChoice. It should take values 0-3. Also, generate
+		 * choices for targets such that each of the four elements are enumerated with a
+		 * true or false value using the Verify.getBoolean() API. To see how to use the
+		 * Verify API, look at:
 		 * https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 		 */
-		targetChoice = Verify.getInt(0, 3);
-		for(int i = 0; i < 4; i++) {
-			targets[i] = Verify.getBoolean();
-		}
 		
 		// Create the game
 		shooter = DrunkCarnivalShooter.createInstance();
@@ -56,25 +55,20 @@ public class DrunkCarnivalShooterTest {
 	}
 
 	/**
-	 * Test case for void reset(Bean[] beans).
-	 * Preconditions: None.
-	 * Execution steps: Call logic.reset(beans).
-	 * Invariants: If beanCount is greater than 0,
-	 *             remaining bean count is beanCount - 1
-	 *             in-flight bean count is 1 (the bean initially at the top)
-	 *             in-slot bean count is 0.
-	 *             If beanCount is 0,
-	 *             remaining bean count is 0
-	 *             in-flight bean count is 0
-	 *             in-slot bean count is 0.
+	 * Test case for boolean shoot(int t, StringBuilder builder).
+	 * Preconditions: Create StringBuilder builder = new StringBuilder();
+	 * Execution steps: Call shooter.shoot(targetChoice, builder);
+	 * Invariant: The number of targets which returns true on shooter.isTargetStanding(i)
+	 *             where i is the target number is equal to shooter.getRemainingTargetNum().
 	 */
 	@Test
 	public void testShoot() {
 		// TODO: Implement
+		
 		/*
 		 * Currently, it just prints out the failString to demonstrate to you all the
 		 * cases considered by Java Path Finder. If you called the Verify API correctly
-		 * in setUp(), you should see all combinations of targets and targetChoice:
+		 * in setUp(), you should see all combinations of targets and targetChoices:
 		 * 
 		 * Failure in Round #0:                         (targetChoice=0):
 		 * Failure in Round #0:                    ||   (targetChoice=0):
@@ -88,16 +82,6 @@ public class DrunkCarnivalShooterTest {
 		 * 
 		 * PLEASE REMOVE when you are done implementing.
 		 */
-		//System.out.println(failString);
-		StringBuilder builder = new StringBuilder();
-		shooter.shoot(targetChoice, builder);
-		
-		int remaining = 0;
-		for(int i = 0; i < 4; i++) {
-			if(shooter.isTargetStanding(i)) {
-				remaining++;
-			}
-		}
-		assertEquals(failString, remaining, shooter.getRemainingTargetNum());
+		System.out.println(failString);
 	}
 }

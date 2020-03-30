@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-import gov.nasa.jpf.annotation.FilterField;
-import gov.nasa.jpf.vm.Verify;
-
 public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
 	Random rand;
 

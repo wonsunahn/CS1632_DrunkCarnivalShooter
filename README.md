@@ -7,7 +7,13 @@ both look for patterns that are either symptomatic of a bug (former) or are bad
 coding style (latter).  So we will look at them together first.  Later we will
 look at JPF which is much more rigorous in proving a program correct.
 
-* IMPORTANT: You need Java 8 (1.8.0.231, preferably) to run JPF.  Make sure you have the correct Java version by doing "java -version" and "javac -version" before going into the JPF section.
+* IMPORTANT: You need Java 8 (1.8.0.231, preferably) to run the Java Path
+  Finder model checker.  Make sure you have the correct Java version by doing
+"java -version" and "javac -version" before going into the JPF section.  If you
+don't have the correct version, here is a link to a folder with installation
+packages for each OS:
+
+https://drive.google.com/drive/folders/1E76H7y2nMsrdiBwJi0nwlzczAgTKKhv7
 
 ## SpotBugs and CheckStyle
 
@@ -80,9 +86,6 @@ Both linters (CheckStyle) and bug finders (SpotBugs) work by pattern matching.  
 
 ## Java Pathfinder (JPF)
 
-Java Pathfinder (JPF): 
-https://github.com/javapathfinder/jpf-core/wiki, http://javapathfinder.sourceforge.net/
-
 Java Pathfinder is a tool developed by NASA to model check Java programs.  It
 works in exactly the same way we learned in class: it does an exhaustive and
 systematic exploration of program state space to check for correctness.
@@ -94,7 +97,7 @@ slides:
 
 <img src="jpf.png" width="50%" height="50%">
 
-First cd into the DrunkCarnivalShooter directory before executing the scripts.
+First cd into the Rand directory before executing the scripts.
 
 To run the Rand program (for Windows users):
 ```
@@ -107,57 +110,133 @@ $ runJPFRand.bat
 
 For Mac or Linux users, please run the corresponding .sh scripts.
 
-When you run Rand with JPF, you can see from the screen output that it goes through all possible states, thereby finding the two states with division-by-0 exception errors (I configured JPF to find all possible errors).  Also, when you run JPF, you will get a file named jpf-state-space.dot that is a graph representation of the states that you have traversed.  The file is in DOT format that is viewable from the Graphviz viewer.  There is an online version here: http://graphviz.it/.  All you have to do is open the jpf-state-space.dot on a text editor and copy-paste it to the website.  Then, you should see a diagram very similar to the one shown above.  Don't pay attention to the source code line numbers.  There seems to be a bug in the JPF source code line calculation code.
-
-So, now we know that there are two defective states, how do we debug?  You will see that JPF has generated a trace file named [Rand.trace](Rand.trace) of all the choices it had made to get to that state.  You will see two traces since there are two defective states.  Pay attention to "cur" value of each Random.nextInt invocation (that is the choice JPF has made for that invocation).  The first trace shows values of 0, 2 for a, b and the second trace shows cur values of 1, 1 for a, b.  These are exactly the values that would cause a division-by-0 exception at c = a/(b+a -2).  In this way, the trace file lets you easily trace through the code to get to the defective state.
+When you run Rand with JPF, you can see from the screen output that it goes
+through all possible states, thereby finding the two states with division-by-0
+exception errors (I configured JPF to find all possible errors).  So, now we
+know that there are two defective states, how do we debug?  You will see that
+JPF has generated a trace file named [Rand.trace](Rand.trace) of all the
+choices it had made to get to that state.  You will see two traces since there
+are two defective states.  Pay attention to "cur" value of each Random.nextInt
+invocation (that is the choice JPF has made for that invocation).  The first
+trace shows values of 0, 2 for a, b and the second trace shows cur values of 1,
+1 for a, b.  These are exactly the values that would cause a division-by-0
+exception at c = a/(b+a -2).  In this way, the trace file lets you easily trace
+through the code to get to the defective state.
 
 ### JPF on DrunkCarnivalShooter
 
-Now let's try using JPF to debug and verify a real program.  DrunkCarnivalShooter is a simple text-based game where the player goes to a carnival shooting range and tries to win the prize by shooting all 4 provied targets.  The player can designate what target to shoot for pressing 0-3.  But since the player is drunk, there is an equal chance of the player shooting left or right as shooting straight.  Refer to the file [sample_run.txt](sample_run.txt) for an example game play session.
+First cd into the DrunkCarnivalShooter folder.
 
-To run the DrunkCarnivalShooter program (for Windows users):
+Now let's try using JPF to debug and verify a real program.  DrunkCarnivalShooter is a simple text-based game where the player goes to a carnival shooting range and tries to win the prize by shooting all 4 provied targets.  The player can designate what target to shoot for pressing 0-3.  But since the player is drunk, there is an equal chance of the player shooting left or right as shooting straight.  Refer to the file [sample_run.txt](sample_run.txt) for an example game play session.  You can also try playing it yourself using the reference implementation:
+```
+$ java -jar DrunkCarnivalShooter.jar
+```
+
+To run the DrunkCarnivalShooter using the current implementation (for Windows users):
 ```
 $ run.bat
 ```
-
-For Mac or Linux users, please run the corresponding .sh scripts (for this one any following).
-
-You may not notice the bug after playing the game once or twice due to the randomness of the shooting but it is definitely in there.  Now let's try running the JPF tool:
+For Mac or Linux:
 ```
-$ runJPF.bat
+$ run.sh
 ```
 
-The JPF tool also doesn't show any errors but that is because DrunkCarnivalShooter takes user input and JPF does not know how to handle it.  Just like random numbers, we would like to have JPF to go over every possibility.  We will do that by using the Verify API.  But in order to be able to use that feature, we first have to import a library at the top of DrunkCarnivalShooter.java:
+Now the current implementation contains a couple of bugs.  You will notice
+immediately after playing the game once or twice.  The bug does not manifest in
+a deterministic way due to the randomness but you will notice soon enough.
+
+So now let's use the JPF tool to try find some defects!
+```
+$ runJPF.bat DrunkCarnivalShooter.win.jpf
+```
+For Mac or Linux:
+```
+$ runJPF.sh DrunkCarnivalShooter.macos.jpf
+```
+
+The JPF tool also doesn't show any errors but that is because
+DrunkCarnivalShooter takes user input and JPF does not know how to handle it.
+Just like random numbers, we would like to have JPF to go over every
+possibility.  We will do that by using the Verify API.  But in order to be able
+to use that feature, we first have to import a library at the top of
+DrunkCarnivalShooter.java:
+
 ```
 import gov.nasa.jpf.vm.Verify;
 ```
+
 Now instead of scanning user input using the following statement:
+
 ```
 int t = scanner.nextInt();
 ```
+
 Exhaustively generate all possible inputs using the Verify API:
+
 ```
 int t = Verify.getInt(0, 3);
 ```
-* Invoke Verify instead of Scanner only when a commandline argument "test" is passed to program.  The "test" argument will put the program in test mode and not in play mode.  You can see "test" is already configured as the commandline argument in the target.args entry in [DrunkCarnivalShooter.jpf](DrunkCarnivalShooter/DrunkCarnivalShooter.jpf)), which is the JPF configuration file use when [runJPF.bat](DrunkCarnivalShooter/runJPF.bat) is invoked.
 
-The above will direct JPF to generate 4 states each where t is set to 0, 1, 2, or 3 respectively.  Then it will systematically explore each state.  If you wish, you can test a larger set of numbers beyond 0-3.  You can even test strings.  It is just going to generate more states and take longer (the flipside being you will be able to model check your program against a larger set of inputs).
+* Invoke Verify instead of Scanner only when a commandline argument "test" is
+  passed to program.  The "test" argument will put the program in test mode and
+not in play mode.  You can see "test" is already configured as the commandline
+argument in the target.args entry in
+[DrunkCarnivalShooter.win.jpf](DrunkCarnivalShooter.win.jpf)).
 
-Now let's try running runJPF.bat one more time.  This will show an error state with an exception:
+The above will direct JPF to generate 4 states each where t is set to 0, 1, 2,
+or 3 respectively.  Then it will systematically explore each state.  If you
+wish, you can test a larger set of numbers beyond 0-3.  It is just going to
+generate more states and take longer (the flipside being you will be able to
+model check your program against a larger set of inputs).
+
+Now let's try running runJPF.bat one more time like the above.  This will show
+an error state with an exception:
+
 ```
 ====================================================== error 1
 gov.nasa.jpf.vm.NoUncaughtExceptionsProperty
 java.lang.ArrayIndexOutOfBoundsException: -1
         at java.util.ArrayList.elementData(java/util/ArrayList.java:422)
         at java.util.ArrayList.get(java/util/ArrayList.java:435)
-        at DrunkCarnivalShooter.isTargetStanding(DrunkCarnivalShooter.java:83)
-        at DrunkCarnivalShooter.takeDownTarget(DrunkCarnivalShooter.java:75)
-        at DrunkCarnivalShooter.shoot(DrunkCarnivalShooter.java:62)
-        at DrunkCarnivalShooter.main(DrunkCarnivalShooter.java:97)
+        at DrunkCarnivalShooterImpl.isTargetStanding(DrunkCarnivalShooterImpl.java:78)
+        at DrunkCarnivalShooterImpl.takeDownTarget(DrunkCarnivalShooterImpl.java:69)
+        at DrunkCarnivalShooterImpl.shoot(DrunkCarnivalShooterImpl.java:58)
+        at DrunkCarnivalShooterImpl.main(DrunkCarnivalShooterImpl.java:97)
+...
 ```
-Use the generated DrunkCarnivalShooter.trace trace file in the same way you used Rand.trace to find the input value(s) and the random value(s) that led to the exception.
 
-Once you fix these bugs, try running runJPF.bat one more time.  Not that you have fixed the buggy state JPF runs for much longer.  In fact, JPF is going to fall into an infinite loop and generate an infinite number of states (observed by the ever increasing Round number).
+Use the trace generated as part of the output to find the input value(s) and
+the random value(s) that led to the exception.  Interpret it in the same way
+you did Rand.trace.  The trace should look like:
+
+```
+====================================================== trace #1
+------------------------------------------------------ transition #0 thread: 0
+gov.nasa.jpf.vm.choice.ThreadChoiceFromSet {id:"ROOT" ,1/1,isCascaded:false}
+      [50072 insn w/o sources]
+------------------------------------------------------ transition #1 thread: 0
+gov.nasa.jpf.vm.choice.BreakGenerator {id:"MAX_TRANSITION_LENGTH" ,1/1,isCascaded:false}
+      [48603 insn w/o sources]
+------------------------------------------------------ transition #2 thread: 0
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..3,delta=+1,cur=0]
+      [22 insn w/o sources]
+------------------------------------------------------ transition #3 thread: 0
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..2,delta=+1,cur=0]
+      [64 insn w/o sources]
+...
+```
+
+What would be the first choice interval 0..3?  It would be the Verify.getInt(0,
+3), and in the trace it returned 0.  What would be the second choice interval
+0..2?  It would be the rand.nextInt(3) used to add randomness to the shooting
+target, and in the trace it also returned 0.  That should help you track down
+the problem.
+
+Once you fix these bugs, try running runJPF.bat one more time.  Now that you
+have fixed the buggy state JPF runs for much longer.  In fact, JPF is going to
+fall into an infinite loop and generate an infinite number of states (observed
+by the ever increasing Round number).
+
 ```
 ...
 Round #20:
@@ -165,15 +244,28 @@ Round #20:
 Choose your target (0-3):
 You aimed at target #0 but the Force pulls your bullet to the left.
 You miss! "Do or do not. There is no try.", Yoda chides.
+
 Round #21:
         ||    ||    ||
 Choose your target (0-3):
 You miss! "Do or do not. There is no try.", Yoda chides.
+
 ... (to infinity)
 ```
-There is no theoretical limit to the number of rounds a player can play, hence the state explosion.  How can I deal with this explosion and still verify my program?
 
-We have to somehow narrow down the amount of state we test, or we will be forced to but JPF off after testing only a limited set of rounds.  Let's say the state that we are really interested in relation to the specifications is the state of the 4 targets.  Now if you think about it, the 4 targets can only be in a handful of states: 2 * 2 * 2 * 2 = 16 states (standing or toppled for each).  And this is true no matter how many rounds you go through.  The only thing that constantly changes every round is the round number --- and that is the culprit leading to the state explosion.  The round number is not something we are interested in verifying right now.  So, let's filter that state out!
+There is no theoretical limit to the number of rounds a player can play, hence
+the state explosion.  How can I deal with this explosion and still verify my
+program?
+
+We have to somehow narrow down the amount of state we test, or we will be
+forced to but JPF off after testing only a limited set of rounds.  Let's say
+the state that we are really interested in relation to the specifications is
+the state of the 4 targets.  Now if you think about it, the 4 targets can only
+be in a handful of states: 2 * 2 * 2 * 2 = 16 states (standing or toppled for
+each).  And this is true no matter how many rounds you go through.  The only
+thing that constantly changes every round is the round number --- and that is
+the culprit leading to the state explosion.  The round number is not something
+we are interested in verifying right now.  So, let's filter that state out!
 
 Import the appropriate JPF library at the top of DrunkCarnivalShooter.java again:
 ```
@@ -184,10 +276,10 @@ And now, let's annotate roundNum such that it is filtered out:
 @FilterField private static int roundNum;
 ```
 
-Now if we run runJPF.bat again, JPF will only go up to Round #5 and stop and declare "no errors detected".
+Now if we run runJPF.bat again, JPF will only go up to Round #2 and stop and declare "no errors detected".
 ```
 ...
-Round #5:
+Round #2:
 
 Choose your target (0-3):
 
@@ -195,25 +287,58 @@ Choose your target (0-3):
 no errors detected
 ```
 
-How is it able to do this?  This is because all 16 states can be covered in the space of 5 rounds.  Any further number of rounds will result in a match with an already visited state and therefore will not need to be explored.  You can again view the jpf-state-space.dot file on http://graphviz.it/ and see for yourself that a lot of transitions ended up in the same state (match).
+But why Round #2?  We would expect that 4 rounds would be needed to cover all
+the 16 possible states.  In fact, if you see the output, you can see it does
+not cover all the possible 16 states.  And somehow the game is able to
+terminate after 2 rounds.  So the game now does not throw any exceptions but
+still malfunctions.  So what can be done?  Let's write a JUnit test to check
+the behavior of the game against expected behavior!
 
-Now, are we done?  Actually not.  JPF declares no errors but when you actually try playing the game using run.bat, you will notice that often the game will end prematurely or continue even when it should have finished.  That is because the model checker only checked no exceptions are thrown during the course of the game but did not check any other specification.  Looking at the defect, it seems the specification that the game should end when there are no remaining targets has been violated.  So let us check an invariant by inserting an assertion at the end of the shoot(int) method:
+Fill in the locations with TODO comments inside DrunkCarnivalShooterTest.java.
+In the setUp method, use the Verify API such that you enumerate all the 16
+possible states that the game can be in, as well as the target choice made by
+the user (0-3).  In this way, each of your JUnit test cases will be tested on
+all possible states the game can be in with all possible user inputs!
+
+In the testShoot() method, implement the preconditions, execution steps, and
+the invariant to test the shoot(targetChoice, builder) method as explained in
+the method comment.  The invariant is a property that must hold no matter the
+game state and the target choice.  For this test, the invariant chosen was the
+remaining number of targets, because it appears that the game is ending
+prematurely thinking that there aren't any more targets.
+
+I recommend that you always insert the failString that I initialized for you in
+the setUp method as the first argument of any JUnit assert call so that you get
+that as part of your failure message.  For example,
 
 ```
-assert remainingTargetNum == targets.stream().filter(p -> p == true).count();
+assertEquals(failString, expected value, observed value);
 ```
 
-This checks at every round that remainingTargetNum is equal to the actual number of remaining targets.  It uses Java lambda expression to count the number of trues in the targets list, in order to fit it inside a single assert.  Also, don't forget to add the -ea (enable assert) option to the JVM inside the runJPF.bat file:
+The failString tells you the combination of game state and target choice that
+led to the failure, which helps you debug the problem.  Feel free to append
+additional information to the failString that may help you debug.
 
+In order to run JUnit with JPF,
 ```
-java -ea -jar jpf-core/build/RunJPF.jar +site=./jpf-core/site.properties DrunkCarnivalShooter.jpf
+runJPF.bat JUnit.win.jpf
+```
+For Mac or Linux:
+```
+runJPF.sh JUnit.macos.jpf
 ```
 
-Now if we run runJPF.bat again, we should see the assertion fire.  Remove the defect, again with the help of the DrunkCarnivalShooter.trace trace file.  After debugging, you should see the "no errors detected" message again.  Now try playing the actual game using the run.bat command.  It should now run smoothly with no issues.
+If you implemented the test properly, you should see a long list of errors for different combinations.  Debug DrunkCarnivalShooterImpl to remove the errors.  Now if you play the game, you should not see any defects.
 
 ### Lessons on Model Checking
 
-What have we learned?  We learned that a model checker such as JPF can guarantee correctness for the given set of inputs.  But in order to do that, you often need to limit the amount of state JPF monitors to prevent state explosion.  Also, the guarantee of correctness depends heavily on how much of the program specification you have encoded into the source code in the form of asserts.  If there are no asserts, JPF can only check only basic things such as no exceptions.
+What have we learned?  We learned that a model checker such as JPF can
+guarantee correctness for the given set of inputs.  But in order to do that,
+you often need to limit the amount of state JPF monitors to prevent state
+explosion.  Also, the guarantee of correctness depends heavily on how much of
+the program specification you have encoded into your testing in the form of
+assertions.  If there are no assertions, JPF can only check only basic things
+such as no exceptions.
 
 ## Submission
 
@@ -228,3 +353,25 @@ https://github.com/wonsunahn/CS1632_Fall2019/tree/master/exercises/5
 Please submit by Friday (11/15) 11:59 PM to get timely feedback.
 
 IMPORTANT: Please keep the github private and add the following users as collaborators: nikunjgoel95, wonsunahn
+
+## Resources
+
+These links are the same ones posted at the end of the slides:
+
+* JDK 8 installation packages:  
+https://drive.google.com/drive/folders/1E76H7y2nMsrdiBwJi0nwlzczAgTKKhv7
+
+* Java Path Finder manual:  
+https://github.com/javapathfinder/jpf-core/wiki/How-to-use-JPF
+http://javapathfinder.sourceforge.net/
+
+* Java Path Finder Verify API:  
+https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
+
+* CheckStyle reference:  
+https://checkstyle.sourceforge.io/checks.html  
+If you don't understand a CheckStyle warning, read the corresponding entry inside google\_checks\_modified.xml under the checkstyle-jars folder and the above reference.
+
+* SpotBugs reference:  
+https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
+
