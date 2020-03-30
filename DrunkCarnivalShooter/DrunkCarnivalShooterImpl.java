@@ -25,6 +25,15 @@ public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
 		}
 	}
 
+	/**
+	 * "Fuzzes" the target number passed as parameter by randomly subtracting 1 or
+	 * adding 1 or not doing anything.
+	 * 
+	 * @param t       the original target number
+	 * @param builder the StringBuilder to append the output to
+	 * 
+	 * @return the "fuzzed" target number
+	 */
 	private int shootFuzz(int t, StringBuilder builder) {
 		int offsetNum = rand.nextInt(3) - 1;
 		int fuzzedT = t + offsetNum;
@@ -37,6 +46,12 @@ public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
 		return fuzzedT;
 	}
 	
+	/**
+	 * Returns a string representing the status of the targets in the current round.
+	 * Targets that are still standing are represented by the string " || ".
+	 * 
+	 * @return the round string
+	 */
 	public String getRoundString() {
 		String ret = "Round #" + roundNum + ":";
 		for (boolean standing : targets) {
@@ -50,6 +65,15 @@ public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
 		return ret;
 	}
 
+	/**
+	 * Shoots at the aimed target number passed as parameter. However, due to the
+	 * drunkenness of the shooter, you may hit a target to the left or right.
+	 *
+	 * @param t       the target number aimed at
+	 * @param builder the StringBuilder to append the output to
+	 * 
+	 * @return true if you hit a target, false otherwise
+	 */
 	public boolean shoot(int t, StringBuilder builder) {
 		int newT = shootFuzz(t, builder);
 		if (takeDownTarget(newT)) {
@@ -62,6 +86,14 @@ public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
 		}
 	}
 	
+	/**
+	 * If the passed target number is still standing, take it down and decrement
+	 * remainingTargetNum.
+	 *
+	 * @param t the target number
+	 * 
+	 * @return true if the target was standing, false otherwise
+	 */
 	public boolean takeDownTarget(int t) {
 		if(isTargetStanding(t)) {
 			targets.set(t, false);
@@ -71,14 +103,34 @@ public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
 		return false;
 	}
 	
+	/**
+	 * Returns whether a target is still standing.
+	 *
+	 * @param t the target number
+	 * 
+	 * @return true if the target is standing, false otherwise
+	 */
 	public boolean isTargetStanding(int t) {
 		return targets.get(t);
 	}
-
+	
+	/**
+	 * Returns the number of remaining targets.
+	 *  
+	 * @return the number of remaining targets
+	 */
 	public int getRemainingTargetNum() {
 		return remainingTargetNum;
 	}
 
+	/**
+	 * Main method. Loops until there no targets remaining. On each iteration the
+	 * round status string is printed and then the player is prompted to enter a
+	 * target number to aim at. Then the target is shot at with a random "fuzz"
+	 * factor which may cause the bullet to veer left or right.
+	 * 
+	 * @param args[0] - optionally "test" to verify game with JPF
+	 */
 	public static void main(String[] args) {
 		int t;
 		DrunkCarnivalShooterImpl shooter = new DrunkCarnivalShooterImpl();
