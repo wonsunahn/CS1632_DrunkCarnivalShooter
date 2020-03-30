@@ -342,17 +342,19 @@ such as no exceptions.
 
 ## Submission
 
-Please do a Text Submission to Courseweb with a link to the GitHub repository where you stored it, along with names of all group members.
+There is no submission for this exercise.  For CheckStyle and SpotBugs, if you
+don't get any more warnings you've done your job.  As to JPF, this is the
+output you should expect to see.
 
-Example:
+* Result of running "runJPF.bat DrunkCarnivalShooter.win.jpf": [jpf_drunkcarnivalshooter_run.txt](jpf_drunkcarnivalshooter_run.txt)
+* Result of running "runJPF.bat JUnit.win.jpf": [jpf_junit_run.txt](jpf_junit_run.txt)
 
-John Doe  
-Jane Doe  
-https://github.com/wonsunahn/CS1632_Fall2019/tree/master/exercises/5
+Minor details like elapsed time can differ but pay special attention to the
+number of new states.  In the case of the former, there are 233 new states.
+For the latter, there are 141 new states.  Also, note that now the former goes
+up to Round #4 to cover all possible 16 target configurations.
 
-Please submit by Friday (11/15) 11:59 PM to get timely feedback.
-
-IMPORTANT: Please keep the github private and add the following users as collaborators: nikunjgoel95, wonsunahn
+If you are still not sure, show me during lecture times or office hours. :)
 
 ## Resources
 
