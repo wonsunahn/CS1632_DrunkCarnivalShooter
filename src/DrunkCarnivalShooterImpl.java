@@ -1,6 +1,6 @@
-
 /**
  * Code by @author Wonsun Ahn
+ * 
  * DrunkCarnivalShooter: A carnival shooter with four targets, but while drunk!
  */
 
@@ -63,11 +63,11 @@ public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
 	public String getRoundString() {
 		String ret = "Round #" + roundNum + ":";
 		for (boolean standing : targets) {
-			if (standing) {
-				ret += "  ||  ";
-			} else {
-				ret += "      ";
-			}
+		if (standing) {
+			ret += "  ||  ";
+		} else {
+			ret += "      ";
+		}
 		}
 		return ret;
 	}
@@ -109,17 +109,16 @@ public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
 			targets.set(t, false);
 			remainingTargetNum--;
 			return true;
-		} else {
 		}
 		return false;
 	}
 
 	/**
 	 * Returns whether a target is still standing.
-	 *
-	 * @param t the target number
 	 * 
 	 * @return true if the target is standing, false otherwise
+	 * 
+	 * @param t the target number
 	 */
 	public boolean isTargetStanding(int t) {
 		return targets.get(t);
@@ -141,10 +140,13 @@ public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
 	 * target number to aim at. Then the target is shot at with a random "fuzz"
 	 * factor which may cause the bullet to veer left or right.
 	 * 
+	 * 
 	 * @param args Optional command line arguments. Set arg[0] to "test" to verify
 	 *             game with JPF.
+	 *             
+	 * @return the main method does not return anything (stale comment that needs removal)
 	 */
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		DrunkCarnivalShooterImpl shooter = new DrunkCarnivalShooterImpl();
 		Scanner scanner = new Scanner(System.in, "UTF-8");
 		while (true) {

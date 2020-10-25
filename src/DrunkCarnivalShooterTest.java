@@ -1,13 +1,11 @@
-import static org.junit.Assert.*;
-
-import gov.nasa.jpf.vm.Verify;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Code by @author Wonsun Ahn
  * 
- * <p>
- * Uses the Java Path Finder model checking tool to check DrunkCarnivalShooter
+ * <p>Uses the Java Path Finder model checking tool to check DrunkCarnivalShooter
  * shoot method for all scenarios. It enumerates all possible states of the
  * targets as well as all possible target choices by the user.
  */
@@ -33,20 +31,23 @@ public class DrunkCarnivalShooterTest {
 		 * Verify API, look at:
 		 * https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 		 */
-		
+
 		// Create the game
 		shooter = DrunkCarnivalShooter.createInstance();
 		// Set up the targets in the game to reflect the targets array
-		for(int i = 0; i < 4; i++) {
-			if(targets[i] == false) {
+		for (int i = 0; i < 4; i++) {
+			if (targets[i] == false) {
 				shooter.takeDownTarget(i);
 			}
 		}
-		
+
 		// A failstring useful to pass to assertions to get a more descriptive error.
 		failString = "Failure in " + shooter.getRoundString() + " (targetChoice=" + targetChoice + "):";
 	}
 
+	/**
+	 * Tears down the test fixture.
+	 */
 	@After
 	public void tearDown() {
 		shooter = null;
@@ -56,7 +57,8 @@ public class DrunkCarnivalShooterTest {
 
 	/**
 	 * Test case for boolean shoot(int t, StringBuilder builder).
-	 * Preconditions: Create StringBuilder builder = new StringBuilder();
+	 * 
+	 * <p>Preconditions: Create StringBuilder builder = new StringBuilder();
 	 * Execution steps: Call shooter.shoot(targetChoice, builder);
 	 * Invariant: The number of targets which returns true on shooter.isTargetStanding(i)
 	 *            where i = 0 ... 3 is equal to shooter.getRemainingTargetNum().
@@ -64,21 +66,17 @@ public class DrunkCarnivalShooterTest {
 	@Test
 	public void testShoot() {
 		// TODO: Implement
-		
+
 		/*
 		 * Currently, it just prints out the failString to demonstrate to you all the
 		 * cases considered by Java Path Finder. If you called the Verify API correctly
 		 * in setUp(), you should see all combinations of targets and targetChoices:
 		 * 
-		 * Failure in Round #0:                         (targetChoice=0):
-		 * Failure in Round #0:                    ||   (targetChoice=0):
-		 * Failure in Round #0:              ||         (targetChoice=0):
-		 * Failure in Round #0:              ||    ||   (targetChoice=0):
-		 * Failure in Round #0:        ||               (targetChoice=0):
-		 * ...
-		 * Failure in Round #0:  ||    ||          ||   (targetChoice=3):
-		 * Failure in Round #0:  ||    ||    ||         (targetChoice=3):
-		 * Failure in Round #0:  ||    ||    ||    ||   (targetChoice=3):
+		 * Failure in Round #0: (targetChoice=0): Failure in Round #0: ||
+		 * (targetChoice=0): Failure in Round #0: || (targetChoice=0): Failure in Round
+		 * #0: || || (targetChoice=0): Failure in Round #0: || (targetChoice=0): ...
+		 * Failure in Round #0: || || || (targetChoice=3): Failure in Round #0: || || ||
+		 * (targetChoice=3): Failure in Round #0: || || || || (targetChoice=3):
 		 * 
 		 * PLEASE REMOVE when you are done implementing.
 		 */
