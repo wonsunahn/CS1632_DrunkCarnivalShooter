@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="Sieve"/>
-	<classpathentry kind="src" path="Rand"/>
-	<classpathentry kind="src" path="DrunkCarnivalShooter"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -19,5 +16,6 @@
 	<classpathentry kind="lib" path="jpf-core/build/jpf.jar"/>
 	<classpathentry kind="lib" path="jpf-core/build/RunJPF.jar"/>
 	<classpathentry kind="lib" path="jpf-core/build/RunTest.jar"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
