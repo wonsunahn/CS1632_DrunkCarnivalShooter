@@ -9,12 +9,12 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class DrunkCarnivalShooterImpl implements DrunkCarnivalShooter {
-	Random rand;
+	private static Random rand;
 
-	private ArrayList<Boolean> targets;
-	private int remainingTargetNum;
+	private static ArrayList<Boolean> targets;
+	private static int remainingTargetNum;
 
-	private int roundNum;
+	private static int roundNum;
 
 	/**
 	 * Constructor. Creates 4 targets for the player to shoot. Not a particularly
