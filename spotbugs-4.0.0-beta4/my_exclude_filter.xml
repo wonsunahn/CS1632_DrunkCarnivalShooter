@@ -5,4 +5,9 @@
    <Method name="main" />
    <Bug pattern="DM_DEFAULT_ENCODING" />
 </Match>
+<Match>
+   <Class name="DrunkCarnivalShooterBuggy" />
+   <Method name="main" />
+   <Bug pattern="DM_DEFAULT_ENCODING" />
+</Match>
 </FindBugsFilter>

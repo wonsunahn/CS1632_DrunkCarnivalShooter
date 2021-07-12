@@ -1,7 +1,28 @@
-# Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
+- [Exercise 5 - Static Analysis Part 1: Linters and Bug Finders](#exercise-5---static-analysis-part-1-linters-and-bug-finders)
+  * [Description](#description)
+  * [DrunkCarnivalShooter](#drunkcarnivalshooter)
+  * [Applying SpotBugs and CheckStyle](#applying-spotbugs-and-checkstyle)
+    + [Lessons on Pattern Matching](#lessons-on-pattern-matching)
+  * [Submission](#submission)
+  * [Resources](#resources)
+- [Exercise 5 - Static Analysis Part 2: Model Checking](#exercise-5---static-analysis-part-2-model-checking)
+  * [Applying Java Pathfinder (JPF)](#applying-java-pathfinder--jpf-)
+    + [Applying JPF on Rand](#applying-jpf-on-rand)
+    + [Applying JPF on DrunkCarnivalShooter](#applying-jpf-on-drunkcarnivalshooter)
+    + [Applying JPF on JUnit to Unit Test DrunkCarnivalShooter](#applying-jpf-on-junit-to-unit-test-drunkcarnivalshooter)
+    + [Lessons on Model Checking](#lessons-on-model-checking)
+  * [Submission](#submission-1)
+  * [GradeScope Feedback](#gradescope-feedback)
+  * [Resources](#resources-1)
 
-* DUE: Oct 28, 2020 09:00 AM (Mon/Wed class)
-* DUE: Oct 29, 2020 09:00 AM (Tue/Thu class)
+# Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
+Summer Semester 2021 - Exercise 5
+
+* DUE: July 19 (Monday), 2021 06:30 PM
+
+**GitHub Classroom Link:** 
+
+## Description
 
 In this exercise, you will use two static analysis tools to test a program: a
 bug finder named SpotBugs and a linter named CheckStyle, SpotBugs and
@@ -44,7 +65,7 @@ an exception immediately at start up:
 $ java -cp bin;jpf-core/build/* DrunkCarnivalShooterImpl
 Exception in thread "main" java.lang.NullPointerException
         at DrunkCarnivalShooterImpl.<init>(DrunkCarnivalShooterImpl.java:31)
-        at DrunkCarnivalShooterImpl.main(DrunkCarnivalShooterImpl.java:149)
+        at DrunkCarnivalShooterImpl.main(DrunkCarnivalShooterImpl.java:150)
 ```
 
 In this exercise, we are going to try to debug the program using static
@@ -95,6 +116,18 @@ $ java -jar spotbugs-4.0.0-beta4/lib/spotbugs.jar
 The following link contains a short tutorial on how to use the GUI:
 https://spotbugs.readthedocs.io/en/latest/gui.html
 
+SpotBugs will complain about among other things a warning type called
+"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD".  Look up the meaning of this error
+type in the above SpotBugs reference.  It is saying that you should not update
+a static variable from an instance method.  I have seen many of you do this a
+lot in your assignments.  You would declare variables that should really be
+instance variables to be static.  I don't know where you picked up that
+programming habit, but that goes against all OOP principles.  If you are still
+unsure about when to use static and when to use instance variables, here is a
+good tutorial:
+
+https://docs.oracle.com/javase/tutorial/java/javaOO/classvars.html
+
 After removing all warnings, you should see the following ouput for each.
 
 Checkstyle output:
@@ -108,7 +141,7 @@ Audit done.
 SpotBugs output:
 
 ```
-$ java -jar spotbugs-4.0.0-beta4/lib/spotbugs.jar -textui -low -effort:max -longBugCodes bin/*.class
+$ java -jar spotbugs-4.0.0-beta4/lib/spotbugs.jar -textui -low -effort:max -longBugCodes -exclude spotbugs-4.0.0-beta4/my_exclude_filter.xml bin/*.class
 The following classes needed for analysis were missing:
   org.junit.runner.JUnitCore
   org.junit.runner.Result
@@ -167,19 +200,21 @@ this one (see next section).
 
 ## Submission
 
-There is no submission for this exercise.  For CheckStyle and SpotBugs, if you
-don't get any more warnings you've done your job.  As to JPF, this is the
-output you should expect to see.
+Each pairwise group will do one submission to GradeScope, by *one member* of
+the group.  The submitting member will press the "View or edit group" link at
+the top-right corner of the assignment page after submission to add his/her
+partner.  
 
-* Result of running "runJPF.bat DrunkCarnivalShooter.win.jpf": [jpf_drunkcarnivalshooter_run.txt](jpf_drunkcarnivalshooter_run.txt)
-* Result of running "runJPF.bat JUnit.win.jpf": [jpf_junit_run.txt](jpf_junit_run.txt)
+You will create a github repository just for exercise 5, as usual.  Add your
+partner as a collaborator so both of you have access.  Make sure you keep the
+repository *PRIVATE* so that nobody else can access your repository.  When you
+are done, submit your github repository to GradeScope at the **Exercise 5 Part
+1 GitHub** link.  Once you submit, GradeScope will run the autograder to grade
+you and give feedback.  If you get deductions, fix your code based on the
+feedback and resubmit.  Repeat until you don't get deductions.
 
-Minor details like elapsed time can differ but pay special attention to the
-number of new states.  In the case of the former, there are 233 new states.
-For the latter, there are 141 new states.  Also, note that now the former goes
-up to Round #4 to cover all possible 16 target configurations.
-
-If you are still not sure, show me during lecture times or office hours. :)
+If you don't get any more warnings you've done your job.  Otherwise, it is -1
+point for each CheckStyle or SpotBugs warning.
 
 ## Resources
 
@@ -192,17 +227,16 @@ https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
 
 # Exercise 5 - Static Analysis Part 2: Model Checking
 
-* DUE: Nov 4, 2020 09:00 AM (Mon/Wed class)
-* DUE: Nov 5, 2020 09:00 AM (Tue/Thu class)
+* DUE: July 23 (Friday), 2021 11:59 PM
 
 In Part 2, you will use a model checker named Java Pathfinder (JPF) to prove
 various correctness properties in your program.
 
 * IMPORTANT: You need Java 8 (1.8.0.231, preferably) to run the Java Path
-  Finder model checker.  Make sure you have the correct Java version by doing
-"java -version" and "javac -version" before going into the JPF section.  If you
-don't have the correct version, here is a link to a folder with installation
-packages for each OS:
+  Finder model checker.  Make sure you have the correct Java version by
+doing "java -version" and "javac -version" before going into the JPF
+section.  If you don't have the correct version, here is a link to a folder
+with installation packages for each OS:
 
 https://drive.google.com/drive/folders/1E76H7y2nMsrdiBwJi0nwlzczAgTKKhv7
 
@@ -269,21 +303,25 @@ $ bash runJPF.sh DrunkCarnivalShooter.macos.jpf
 If you run the above, JPF will immediately display an error similar to the following:
 
 ```
-====================================================== error 1
-gov.nasa.jpf.vm.NoUncaughtExceptionsProperty
-java.lang.NoSuchMethodException: Calling java.io.InputStreamReader.<init>(Ljava/io/InputStream;Ljava/nio/chars
-et/Charset;)V
-        at java.util.Scanner.makeReadable(java/util/Scanner.java:598)
-        at java.util.Scanner.<init>(java/util/Scanner.java:578)
-        at DrunkCarnivalShooterImpl.main(DrunkCarnivalShooterImpl.java:149)
+...
+====================================================== search started: 10/25/20 9:54 PM
+Round #0:  ||    ||    ||    ||
+Choose your target (0-3):
+
+====================================================== results
+no errors detected
+...
 ```
 
-The exception is thrown when a new Scanner is created.  That is because a
-Scanner scans in user input and JPF is not designed to receive user input from
-the terminal.  Instead, JPF uses a set of APIs under the Verify class
-(gov.nasa.jpf.vm.Verify) to specify user input(s) we want to test.  In order to
-be able to use this feature, we first have to import the class at the top of
-DrunkCarnivalShooterImpl.java:
+No errors, yay!  So are we done?  No, far from it.  From the search output, you
+can see that the search ended immediately at the first point of user input.
+That is because JPF is not designed to receive user input from the terminal.
+Instead, JPF uses a set of APIs under the Verify class (gov.nasa.jpf.vm.Verify)
+to specify the set of user input(s) we want to test.  Then, it **exhaustively
+tests the program for each user input**.
+
+In order to be able to use this feature, we first have to import the class at
+the top of DrunkCarnivalShooterImpl.java:
 
 ```
 import gov.nasa.jpf.vm.Verify;
@@ -319,15 +357,19 @@ Now let's try running runJPF.bat one more time like the above.  This will show
 a new error message due to an exception:
 
 ```
+====================================================== search started: 10/25/20 10:01 PM
+Round #0:  ||    ||    ||    ||
+Choose your target (0-3):
+
 ====================================================== error 1
 gov.nasa.jpf.vm.NoUncaughtExceptionsProperty
 java.lang.ArrayIndexOutOfBoundsException: -1
         at java.util.ArrayList.elementData(java/util/ArrayList.java:422)
         at java.util.ArrayList.get(java/util/ArrayList.java:435)
-        at DrunkCarnivalShooterImpl.isTargetStanding(DrunkCarnivalShooterImpl.java:78)
-        at DrunkCarnivalShooterImpl.takeDownTarget(DrunkCarnivalShooterImpl.java:69)
-        at DrunkCarnivalShooterImpl.shoot(DrunkCarnivalShooterImpl.java:58)
-        at DrunkCarnivalShooterImpl.main(DrunkCarnivalShooterImpl.java:97)
+        at DrunkCarnivalShooterImpl.isTargetStanding(DrunkCarnivalShooterImpl.java:124)
+        at DrunkCarnivalShooterImpl.takeDownTarget(DrunkCarnivalShooterImpl.java:108)
+        at DrunkCarnivalShooterImpl.shoot(DrunkCarnivalShooterImpl.java:89)
+        at DrunkCarnivalShooterImpl.main(DrunkCarnivalShooterImpl.java:163)
 ...
 ```
 
@@ -381,7 +423,7 @@ interval 0..2?  It would be the rand.nextInt(3) used to add randomness to the
 shooting target, and in the trace it also returned 0 ("cur=0").  So it's the
 case where the user chose target 0 and the randomness of the shooting pulled
 the bullet to the left.  What's on the left side of target 0?  That should help
-you track down the problem.
+you track down the problem.  **Hint: What happens when t becomes -1 in isTargetStanding?**
 
 Once you fix these bugs, try running runJPF.bat one more time.  Now that you
 have fixed the buggy state JPF runs for much longer.  In fact, JPF is going to
@@ -539,19 +581,65 @@ such as no exceptions.
 
 ## Submission
 
-There is no submission for this exercise.  For CheckStyle and SpotBugs, if you
-don't get any more warnings you've done your job.  As to JPF, this is the
-output you should expect to see.
+When you are done, submit your Exercise 5 github repository to GradeScope at
+the **Exercise 5 Part 2 GitHub** link.  Once you submit, GradeScope will run
+the autograder to grade you and give feedback.  If you get deductions, fix your
+code based on the feedback and resubmit.  Repeat until you don't get
+deductions.
 
-* Result of running "runJPF.bat DrunkCarnivalShooter.win.jpf": [jpf_drunkcarnivalshooter_run.txt](jpf_drunkcarnivalshooter_run.txt)
-* Result of running "runJPF.bat JUnit.win.jpf": [jpf_junit_run.txt](jpf_junit_run.txt)
+## GradeScope Feedback
 
-Minor details like elapsed time can differ but pay special attention to the
-number of new states.  In the case of the former, there are 233 new states.
-For the latter, there are 141 new states.  Also, note that now the former goes
-up to Round #4 to cover all possible 16 target configurations.
+The GradeScope autograder works in 2 phases:
+1. DrunkCarnivalShooterTest on DrunkCarnivalShooterImpl
 
-If you are still not sure, show me during lecture times or office hours. :)
+   This runs your DrunkCarnivalShooterTest JUnit test on your
+DrunkCarnivalShooterImpl, with the help of JPF to do exhaustive state
+exploration.  Assuming your implementation is bug-free, it should not turn up
+any JUnit test failures.
+
+1. DrunkCarnivalShooterTest on DrunkCarnivalShooterBuggy
+
+   This runs your DrunkCarnivalShooterTest JUnit test on the buggy
+DrunkCarnivalShooterBuggy implementation, again with the help of JPF.  Since
+this implementation is buggy, JPF should find states where there are JUnit test
+failures.
+
+If you have trouble, try comparing your JPF outputs against these expected
+outputs:
+
+* Result of running DrunkCarnivalShooterImpl standalone on top of JPF:
+  ```
+  runJPF.bat DrunkCarnivalShooter.win.jpf
+  ```
+  OR
+  ```
+  bash runJPF.sh DrunkCarnivalShooter.macos.jpf
+  ```
+  Expected output: [jpf_drunkcarnivalshooter_run.txt](jpf_drunkcarnivalshooter_run.txt)
+
+* Result of running DrunkCarnivalShooterTest on DrunkCarnivalShooterImpl on top of JPF. Corresponds to the autograder phase 1 output:
+  ```
+  runJPF.bat JUnit.win.jpf
+  ```
+  OR
+  ```
+  bash runJPF.sh JUnit.macos.jpf
+  ```
+  Expected output: [jpf_junit_run.txt](jpf_junit_run.txt).  
+
+* Result of running DrunkCarnivalShooterTest on DrunkCarnivalShooterBuggy on top of JPF. Corresponds to the autograder phase 2 output.  First uncomment "target.args = buggy" in JUnit.win.jpf or JUnit.macos.jpf, depending on your OS.  Then run:
+  ```
+  runJPF.bat JUnit.win.jpf
+  ```
+  OR
+  ```
+  bash runJPF.sh JUnit.macos.jpf
+  ```
+  Expected output: [jpf_junit_buggy_run.txt](jpf_junit_buggy_run.txt).
+  
+Minor details like elapsed time statistics can differ but the search output and
+the results output should look the same.  Also, note that now the former goes
+up to Round #4 and covers all possible 16 target configurations.
 
 ## Resources
 

@@ -1,16 +1,24 @@
+
 /**
- * Code by @author Wonsun Ahn CarnivalShooter: Using arbitrary trial and shooter
+ * Code by @author Wonsun Ahn
+ * 
+ * <p>CarnivalShooter: Using arbitrary trial and shooter
  * numbers, find how many targets are hit in those trials.
  */
 
 public interface DrunkCarnivalShooter {
 	/**
-	 * Returns the either BeanCounterLogicImpl instance.
+	 * Returns the either DrunkCarnivalShooterImpl or DrunkCarnivalShooterBuggy instance
+	 * depending on the Config.
 	 * 
 	 * @return DrunkCarnivalShooter object
 	 */
 	public static DrunkCarnivalShooter createInstance() {
-		return new DrunkCarnivalShooterImpl();
+		if (Config.getBuggy()) {
+			return new DrunkCarnivalShooterBuggy();
+		} else {
+			return new DrunkCarnivalShooterImpl();
+		}
 	}
 
 	public String getRoundString();
