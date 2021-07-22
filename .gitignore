@@ -1,6 +1,4 @@
-/DrunkCarnivalShooter.class
-/Rand.class
-/bin/
+*.class
 *.swp
 *.un~
 *.md~
