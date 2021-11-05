@@ -12,6 +12,11 @@ public class TestRunner {
 	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
 
+		if (args.length > 0 && args[0].equals("buggy")) {
+			Config.setBuggy(true);
+			System.out.println("TESTING BUGGY IMPLEMENTATION\n");
+		}
+
 		ArrayList<Class> classesToTest = new ArrayList<Class>();
 
 		// ADD ANY CLASSES YOU WISH TO TEST HERE
