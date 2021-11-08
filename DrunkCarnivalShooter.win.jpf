@@ -1,4 +1,5 @@
 classpath = bin
+sourcepath = src
 
 # Target class main method to run.  In this case, we are invoking the main method of DrunkCarnivalShooterImpl with the argument "test".
 target = DrunkCarnivalShooterImpl
