@@ -20,7 +20,7 @@ Fall Semester 2021 - Exercise 5
 
 * DUE: Nov 5 (Friday), 2021 11:59 PM
 
-**GitHub Classroom Link:** TBD
+**GitHub Classroom Link:** https://classroom.github.com/a/itfn7J30
 
 ## Description
 
@@ -383,22 +383,29 @@ did Rand.trace.  The trace should look like:
 ------------------------------------------------------ transition #0 thread: 0
 gov.nasa.jpf.vm.choice.ThreadChoiceFromSet {id:"ROOT" ,1/1,isCascaded:false}
       [50072 insn w/o sources]
+DrunkCarnivalShooterImpl.java:152 : DrunkCarnivalShooterImpl shooter = new DrunkCarnivalShooterImpl();
+...
 ------------------------------------------------------ transition #1 thread: 0
 gov.nasa.jpf.vm.choice.BreakGenerator {id:"MAX_TRANSITION_LENGTH" ,1/1,isCascaded:false}
       [48603 insn w/o sources]
+...
 ------------------------------------------------------ transition #2 thread: 0
 gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..3,delta=+1,cur=0]
       [22 insn w/o sources]
+DrunkCarnivalShooterImpl.java:158 : int t = Verify.getInt(0, 3);
+...
 ------------------------------------------------------ transition #3 thread: 0
 gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..2,delta=+1,cur=0]
       [64 insn w/o sources]
+DrunkCarnivalShooterImpl.java:47 : int offsetNum = rand.nextInt(3) - 1;
 ...
 ```
 
-Now let's try to break down that trace.  A transition happens in the course of
-travering the program state space.  Whenever there is a "choice" between one
-more program states, a transition is recorded with the selected choice.  When
-is JPF presented with a choice?
+The trace represents all the Java instructions that have executed up to the
+point of the failure.  Now let's try to break down that trace.  A transition
+happens in the course of travering the program state space.  Whenever there
+is a "choice" between one more program states, a transition is recorded with
+the selected choice.  When is JPF presented with a choice?
 
 1. When it encounters Verify.getInt, it is presented with a range of user
    inputs each of which represents a separate path that JPF can take.  Same
