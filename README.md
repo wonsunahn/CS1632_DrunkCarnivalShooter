@@ -269,18 +269,140 @@ $ runJPF.bat Rand.jpf
 
 For Mac or Linux users, please run the corresponding .sh scripts.
 
-When you run Rand with JPF, you can see from the screen output that it goes
-through all possible states, thereby finding the two states with division-by-0
-exception errors (I configured JPF to find all possible errors).  So, now we
-know that there are two defective states, how do we debug?  You will see that
-JPF has generated a trace file named [Rand.trace](Rand/Rand.trace) of all the
-choices it had made to get to that state.  You will see two traces since there
-are two defective states.  Pay attention to "cur" value of each Random.nextInt
-invocation (that is the choice JPF has made for that invocation).  The first
-trace shows values of 0, 2 for a, b and the second trace shows cur values of 1,
-1 for a, b.  These are exactly the values that would cause a division-by-0
-exception at c = a / (b + a - 2).  In this way, the trace file lets you easily trace
-through the code to get to the defective state.
+Then, you should get the following output:
+
+```
+wahn:Rand wahn$ bash runJPF.sh Rand.jpf
+JavaPathfinder core system v8.0 (rev 471fa3b7c6a9df330160844e6c2e4ebb4bf06b6c) - (C) 2005-2014 United States Government. All rights reserved.
+
+
+====================================================== system under test
+Rand.main()
+
+====================================================== search started: 11/8/21 1:32 PM
+computing c = a/(b+a - 2)..
+a=0
+  b=0       ,a=0
+=>  c=0     , b=0, a=0
+  b=1       ,a=0
+=>  c=0     , b=1, a=0
+  b=2       ,a=0
+
+====================================================== error 1
+gov.nasa.jpf.vm.NoUncaughtExceptionsProperty
+java.lang.ArithmeticException: division by zero
+	at Rand.main(Rand.java:41)
+
+
+====================================================== trace #1
+------------------------------------------------------ transition #0 thread: 0
+gov.nasa.jpf.vm.choice.ThreadChoiceFromSet {id:"ROOT" ,1/1,isCascaded:false}
+      [3168 insn w/o sources]
+  Rand.java:30                   : System.out.println("computing c = a/(b+a - 2)..");
+...
+------------------------------------------------------ transition #1 thread: 0
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..1,delta=+1,cur=0]
+      [2 insn w/o sources]
+  Rand.java:33                   : int a = random.nextInt(2); // (2)
+...
+------------------------------------------------------ transition #2 thread: 0
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..2,delta=+1,cur=2]
+      [2 insn w/o sources]
+  Rand.java:38                   : int b = random.nextInt(3); // (3)
+...
+  Rand.java:41                   : int c = a / (b + a - 2); // (4)
+a=1
+  b=0       ,a=1
+=>  c=-1     , b=0, a=1
+  b=1       ,a=1
+
+====================================================== error 2
+gov.nasa.jpf.vm.NoUncaughtExceptionsProperty
+java.lang.ArithmeticException: division by zero
+	at Rand.main(Rand.java:41)
+
+
+====================================================== trace #2
+------------------------------------------------------ transition #0 thread: 0
+gov.nasa.jpf.vm.choice.ThreadChoiceFromSet {id:"ROOT" ,1/1,isCascaded:false}
+      [3168 insn w/o sources]
+  Rand.java:30                   : System.out.println("computing c = a/(b+a - 2)..");
+...
+------------------------------------------------------ transition #1 thread: 0
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..1,delta=+1,cur=1]
+      [2 insn w/o sources]
+  Rand.java:33                   : int a = random.nextInt(2); // (2)
+...
+------------------------------------------------------ transition #2 thread: 0
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..2,delta=+1,cur=1]
+      [2 insn w/o sources]
+  Rand.java:38                   : int b = random.nextInt(3); // (3)
+...
+  Rand.java:41                   : int c = a / (b + a - 2); // (4)
+  b=2       ,a=1
+=>  c=1     , b=2, a=1
+
+====================================================== results
+error #1: gov.nasa.jpf.vm.NoUncaughtExceptionsProperty "java.lang.ArithmeticException: division by zero  a..."
+error #2: gov.nasa.jpf.vm.NoUncaughtExceptionsProperty "java.lang.ArithmeticException: division by zero  a..."
+
+====================================================== statistics
+elapsed time:       00:00:00
+states:             new=6,visited=3,backtracked=9,end=4
+search:             maxDepth=3,constraints=0
+choice generators:  thread=1 (signal=0,lock=1,sharedRef=0,threadApi=0,reschedule=0), data=3
+heap:               new=950,released=52,maxLive=619,gcCycles=7
+instructions:       3545
+max memory:         123MB
+loaded code:        classes=66,methods=1371
+
+====================================================== search finished: 11/8/21 1:32 PM
+
+```
+
+Since you enabled both error and trace output on [Rand.jpf](src/Rand.jpf):
+```
+report.console.property_violation=error,trace
+```
+The console output will include a description of the error whenever a
+property violation (i.e. Java exception) occurs, as well as the execution
+trace leading up to that error.
+
+You can see from the screen output that JPF systemlatically explores all
+possible states, thereby finding the two states with division-by-0 exception
+errors.  So, now we know that there are two defective states, how do we
+debug?  By looking at the trace corresponding to each error, you can see all
+the Java statement executed leading up to the error and all the choices it
+has made at points where there are nondeterministic choices.  The choices
+are marked as "transitions" in the trace.
+
+Let's take a close look at trace #1.  Transition #0 happens with
+ThreadChoiceFromSet.  At this point JPF chooses one thread to start
+executing out of all the threads in the program (to try out all the possible
+thread interleavings as we discussed in class).  In this case, it is a
+single-threaded program, so there is only thread to choose from: the main
+thread.
+
+Transition #1 looks like the following:
+```
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..1,delta=+1,cur=0]
+```
+The IntIntervalGenerator enumerates all integers in a range of values and
+goes down the program path for each generated integer.  You can see that it
+was invoked in response to the following program statement:
+```
+  Rand.java:33                   : int a = random.nextInt(2); // (2)
+```
+What JPF does is to generate two integers in the range "0..1" with a delta
+of 1, so two integers 0 and 1.  It will try out both possibilities.  The
+current choice is given in "cur=0".  So you can tell that the error occurred
+when "int a = 0;".
+
+If you follow trace #1 using this logic, you can tell that the first
+divide-by-zero exception occurred when a = 0 and b = 2.  If you follow trace
+#2, you can tell that the second exception occurred when a = 1 and b = 1.
+In this way, even without the help of program output, you can trace through
+the code and identify why each error occurred.
 
 ### Applying JPF on DrunkCarnivalShooter
 
