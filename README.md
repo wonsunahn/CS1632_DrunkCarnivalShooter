@@ -16,11 +16,11 @@
   * [Resources](#resources-1)
 
 # Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
-Fall Semester 2021 - Exercise 5
+Spring Semester 2022 - Exercise 5
 
-* DUE: Nov 5 (Friday), 2021 11:59 PM
+* DUE: Mar 25 (Friday), 2022 11:59 PM
 
-**GitHub Classroom Link:** https://classroom.github.com/a/itfn7J30
+**GitHub Classroom Link:** TBD
 
 ## Description
 
@@ -227,7 +227,7 @@ https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
 
 # Exercise 5 - Static Analysis Part 2: Model Checking
 
-* DUE: Nov 12 (Friday), 2021 11:59 PM
+* DUE: Apr 1 (Friday), 2022 11:59 PM
 
 In Part 2, you will use a model checker named Java Pathfinder (JPF) to prove
 various correctness properties in your program.
