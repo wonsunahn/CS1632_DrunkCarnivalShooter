@@ -1,24 +1,31 @@
 - [Exercise 5 - Static Analysis Part 1: Linters and Bug Finders](#exercise-5---static-analysis-part-1-linters-and-bug-finders)
-  * [Description](#description)
-  * [DrunkCarnivalShooter](#drunkcarnivalshooter)
-  * [Applying SpotBugs and CheckStyle](#applying-spotbugs-and-checkstyle)
-    + [Lessons on Pattern Matching](#lessons-on-pattern-matching)
-  * [Submission](#submission)
-  * [Resources](#resources)
+  - [Description](#description)
+  - [DrunkCarnivalShooter](#drunkcarnivalshooter)
+  - [Apply SpotBugs and CheckStyle](#apply-spotbugs-and-checkstyle)
+    - [SpotBugs Report](#spotbugs-report)
+    - [CheckStyle Report](#checkstyle-report)
+  - [Try rerunning the application](#try-rerunning-the-application)
+  - [Lessons on Pattern Matching](#lessons-on-pattern-matching)
+  - [Submission](#submission)
+  - [Resources](#resources)
 - [Exercise 5 - Static Analysis Part 2: Model Checking](#exercise-5---static-analysis-part-2-model-checking)
-  * [Applying Java Pathfinder (JPF)](#applying-java-pathfinder--jpf-)
-    + [Applying JPF on Rand](#applying-jpf-on-rand)
-    + [Applying JPF on DrunkCarnivalShooter](#applying-jpf-on-drunkcarnivalshooter)
-    + [Applying JPF on JUnit to Unit Test DrunkCarnivalShooter](#applying-jpf-on-junit-to-unit-test-drunkcarnivalshooter)
-    + [Lessons on Model Checking](#lessons-on-model-checking)
-  * [Submission](#submission-1)
-  * [GradeScope Feedback](#gradescope-feedback)
-  * [Resources](#resources-1)
+  - [Applying Java Pathfinder (JPF)](#applying-java-pathfinder-jpf)
+    - [Applying JPF on Rand](#applying-jpf-on-rand)
+    - [Applying JPF on DrunkCarnivalShooter](#applying-jpf-on-drunkcarnivalshooter)
+    - [Applying JPF on JUnit to Unit Test DrunkCarnivalShooter](#applying-jpf-on-junit-to-unit-test-drunkcarnivalshooter)
+    - [Obtaining a trace of a JUnit Failure from JPF](#obtaining-a-trace-of-a-junit-failure-from-jpf)
+    - [Lessons on Model Checking](#lessons-on-model-checking)
+  - [Submission](#submission-1)
+  - [GradeScope Feedback](#gradescope-feedback)
+  - [Resources](#resources-1)
 
 # Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
-Spring Semester 2022 - Exercise 5
 
-* DUE: Mar 25 (Friday), 2022 11:59 PM
+**UNDER CONSTRUCTION DO NOT START YET**
+
+Summer Semester 2022 - Exercise 5
+
+* DUE: August 2 (Tuesday), 2022 11:30 AM
 
 **GitHub Classroom Link:** TBD
 
@@ -46,81 +53,82 @@ also try playing it yourself using the reference implementation:
 $ java -jar DrunkCarnivalShooter.jar
 ```
 
-To run the DrunkCarnivalShooter using the current implementation (for Windows users):
+To run the DrunkCarnivalShooter using the current implementation, you first need compile it.
 
 ```
-$ run.bat
+mvn compile
 ```
 
-For Mac or Linux:
+Then run the following commandline:
 
 ```
-$ bash run.sh
+java -cp target/classes edu.pitt.cs.DrunkCarnivalShooterImpl 
 ```
 
 Now the current implementation contains several bugs.  In fact, the game throws
 an exception immediately at start up:
 
 ```
-$ java -cp bin;jpf-core/build/* DrunkCarnivalShooterImpl
+$ java -cp target/classes edu.pitt.cs.DrunkCarnivalShooterImpl
 Exception in thread "main" java.lang.NullPointerException
-        at DrunkCarnivalShooterImpl.<init>(DrunkCarnivalShooterImpl.java:31)
-        at DrunkCarnivalShooterImpl.main(DrunkCarnivalShooterImpl.java:150)
+        at edu.pitt.cs.DrunkCarnivalShooterImpl.<init>(DrunkCarnivalShooterImpl.java:33)
+        at edu.pitt.cs.DrunkCarnivalShooterImpl.main(DrunkCarnivalShooterImpl.java:152)
 ```
 
 In this exercise, we are going to try to debug the program using static
 analysis instead of dynamic testing.  So now let's go and try to find some
 defects!
 
-## Applying SpotBugs and CheckStyle
+## Apply SpotBugs and CheckStyle
 
-Try running both tools on DrunkCarnivalShooterImpl.java.  As usual, I've
-provided scripts to run each tool.
+As before SpotBugs and CheckStyle have already been added to the Maven [POM](pom.xml)
+as plugins.  Note that they have been registered as reporting plugins towards the end.
+These reporting plugins are invoked when the Maven "site" lifecycle phase is invoked.
 
-To run CheckStyle (Windows users):
-
-```
-$ runCheckstyle.bat
-```
-
-To run CheckStyle (Mac/Linux users):
+Let's try invoking Maven site ourselves:
 
 ```
-$ bash runCheckstyle.sh
+mvn site
 ```
 
-To run SpotBugs (Windows users):
+If it works properly, you should see the following at the end:
 
 ```
-$ runSpotbugs.bat
+...
+[INFO] Generating "SpotBugs" report      --- spotbugs-maven-plugin:4.7.1.1:spotbugs
+[INFO] Generating "Checkstyle" report    --- maven-checkstyle-plugin:3.1.2:checkstyle
+[INFO] Generating "Source Xref" report   --- maven-jxr-plugin:3.0.0:jxr
+[INFO] Generating "Test Source Xref" report --- maven-jxr-plugin:3.0.0:test-jxr
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+...
 ```
 
-To run SpotBugs (Mac/Linux users):
+You will also see some Javadoc related errors in the output, but don't worry those
+will be fixed by the time we are done linting the code using CheckStyle.
 
-```
-$ bash runSpotbugs.sh
-```
+Invoking "mvn site" is going to create a new directory target/site, under which a
+website dedicated to this project is generated.  Try opening the "index.html" file at
+the root of that directory.  Then navigate to "Project Reports > SpotBugs" or 
+"Project Reports > CheckStyle" to naviate to either report respectively.
 
-CheckStyle and Spotbugs should print out several warnings each.  Refer to the
-below references to find out what each warning means at fix your code at the
-corresponding source code line:
+### SpotBugs Report
 
-* CheckStyle reference: https://checkstyle.sourceforge.io/checks.html  
-If you don't understand a CheckStyle warning, read the corresponding entry inside google\_checks\_modified.xml under the checkstyle-jars folder and the above reference.
+"Project Reports > SpotBugs" should look like the following:
 
-* SpotBugs reference: https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
-* There is a GUI for SpotBugs if that is what you prefer.  You can launch the GUI by using the following command:
-```
-$ java -jar spotbugs-4.0.0-beta4/lib/spotbugs.jar
-```
-The following link contains a short tutorial on how to use the GUI:
-https://spotbugs.readthedocs.io/en/latest/gui.html
+<img src="spotbugs.png" width="100%" height="100%">
 
-SpotBugs will complain about among other things a warning type called
-"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD".  Look up the meaning of this error
-type in the above SpotBugs reference.  It is saying that you should not update
-a static variable from an instance method.  I have seen many of you do this a
-lot in your assignments.  You would declare variables that should really be
+On each row is a (potential) bug.  The "Details" column contains an abbreviation of the 
+bug type.  Click on the link to view the reference documentation for that bug.  The "Line"
+column shows the line number for that bug.  Click on the link to view the location in
+actual source code. Please resolve all bugs.  Note that resolving some bugs may uncover
+new bugs when you run "mvn site" again.
+
+One of the bug types is going to be "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD".
+If you view the reference, it is saying that you should not update
+a static variable from an instance method.  I have seen many of you do this
+in your assignments.  You would declare variables that should really be
 instance variables to be static.  I don't know where you picked up that
 programming habit, but that goes against all OOP principles.  If you are still
 unsure about when to use static and when to use instance variables, here is a
@@ -128,33 +136,85 @@ good tutorial:
 
 https://docs.oracle.com/javase/tutorial/java/javaOO/classvars.html
 
-After removing all warnings, you should see the following ouput for each.
+Here is a link to the SpotBugs reference, in case you need it:
 
-Checkstyle output:
+https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
+
+### CheckStyle Report
+
+"Project Reports > CheckStyle" should look like the following:
+
+<img src="checkstyle.png" width="100%" height="100%">
+
+After the summary information about the number of errors and warnings found, you will see
+a list of Rules.  Each row displays the rule category, the rule description, the number of
+violations of that rule in the source tree, and the severity.  In the rule description column,
+you will see the rule name (e.g. "AtclauseOrder").  The name is linked to a reference document 
+for that rule.  It also contains a list of properties applied to that rule.  One property for
+the AtclauseOrder rule is "tagOrder" which has the value: "@param, @return, @throws, @deprecated".
+If you read the reference, that is the order in which those at-annotations should appear in the
+Javadoc comment.  But wait, how do we know that is the correct order?
+
+If we don't specify anything, CheckStyle will by default follow the Sun style of Java coding.
+Sun Microsystems, as many of you know, is the company that came up with the Java language and
+is now part of Oracle.  But there is no one "correct" style.  Each software organization can
+have its own unique style, and this style can be summarized in a set of Rules in XML format.
+
+For this project, I designated a file named [google_checks_modified.xml](google_checks_modified.xml)
+as the RUles configuration file that CheckStyle should use in the [POM](pom.xml):
 
 ```
-$ java -jar checkstyle-jars /checkstyle-7.0-all.jar -c checkstyle-jars/google_checks_modified.xml src/DrunkCarnivalShooterImpl.java
-Starting audit...
-Audit done.
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+          <configLocation>google_checks_modified.xml</configLocation>
+        </configuration>
+        ...
+      </plugin>
 ```
 
-SpotBugs output:
+As the name implies, I made a few modifications to the Google style for Java.  Now, if you
+see inside [google_checks_modified.xml](google_checks_modified.xml), you will see:
 
 ```
-$ java -jar spotbugs-4.0.0-beta4/lib/spotbugs.jar -textui -low -effort:max -longBugCodes -exclude spotbugs-4.0.0-beta4/my_exclude_filter.xml bin/*.class
-The following classes needed for analysis were missing:
-  org.junit.runner.JUnitCore
-  org.junit.runner.Result
-  org.junit.runner.notification.Failure
+...
+		<module name="AtclauseOrder">
+			<property name="tagOrder"
+				value="@param, @return, @throws, @deprecated" />
+			<property name="target"
+				value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF" />
+		</module>
+...
 ```
 
-The missing classes are JUnit library classes.  We are not interested in
-debugging the JUnit library, so we did not pass it to SpotBugs.
+And those properties are what is being shown with the AtclauseOrder rule in the report.
 
-After fixing all the warning, now the program should at least start up properly, when run with run.bat:
+If you scroll down beyond the Rules, you will see Details for each warning:
+
+<img src="checkstyle2.png" width="100%" height="100%">
+
+Again, on each row is a "Line" column showing the line number for that warning.  Clicking
+on the link will show the location in actual source code. Please resolve all warnings, looking
+at the details of the Rule that the warning violated.
+
+Here is a link to the CheckStyle reference, in case you need it:
+
+https://checkstyle.sourceforge.io/checks.html  
+
+## Try rerunning the application
+
+After fixing all the warnings, let's now attempt running the program again:
 
 ```
-$ java -cp bin;jpf-core/build/* DrunkCarnivalShooterImpl
+java -cp target/classes edu.pitt.cs.DrunkCarnivalShooterImpl 
+```
+
+Now, the program should start up properly:
+
+```
+$ java -cp target/classes edu.pitt.cs.DrunkCarnivalShooterImpl 
 Round #0:  ||    ||    ||    ||
 Choose your target (0-3):
 ```
@@ -162,7 +222,6 @@ Choose your target (0-3):
 Yay!  But we are note done yet.  There are still bugs remaining.  Try repeatedly shooting the first target by choosing 0.
 
 ```
-$ java -cp bin;jpf-core/build/* DrunkCarnivalShooterImpl
 Round #0:  ||    ||    ||    ||
 Choose your target (0-3):
 0
@@ -187,7 +246,7 @@ ends prematurely even when there are targets remaining.  These bugs are bugs in
 the logic of the program and SpotBugs is not very good at finding these types
 of bugs.  It only finds bugs that match a certain pattern.
 
-### Lessons on Pattern Matching
+## Lessons on Pattern Matching
 
 Both linters (CheckStyle) and bug finders (SpotBugs) work by pattern matching.
 Pattern matching can be good at finding simple bugs that are recurrent across
@@ -220,14 +279,13 @@ point for each CheckStyle or SpotBugs warning.
 
 * CheckStyle reference:  
 https://checkstyle.sourceforge.io/checks.html  
-If you don't understand a CheckStyle warning, read the corresponding entry inside google\_checks\_modified.xml under the checkstyle-jars folder and the above reference.
 
 * SpotBugs reference:  
 https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
 
 # Exercise 5 - Static Analysis Part 2: Model Checking
 
-* DUE: Apr 1 (Friday), 2022 11:59 PM
+* DUE: August 2 (Tuesday), 2022 11:30 AM
 
 In Part 2, you will use a model checker named Java Pathfinder (JPF) to prove
 various correctness properties in your program.
@@ -240,6 +298,9 @@ with installation packages for each OS:
 
 https://drive.google.com/drive/folders/1E76H7y2nMsrdiBwJi0nwlzczAgTKKhv7
 
+Please refer Exercise 0: Java Assessment for instructions on how to set up
+your PATH environment variable.
+
 ## Applying Java Pathfinder (JPF)
 
 Java Pathfinder is a tool developed by NASA to model check Java programs.  It
@@ -248,38 +309,57 @@ systematic exploration of program state space to check for correctness.
 
 ### Applying JPF on Rand
 
-Let's first try out JPF on the example Rand program we saw on "Lecture 16:
-Static Analysis Part 2" slides:  
+Let's first try out JPF on the simple Rand program that in the
+"Static Analysis Part 2" lecture on model checking.
 
 <img src="jpf.png" width="50%" height="50%">
 
-First cd into the Rand directory before executing the scripts.
-
-To run the Rand program (for Windows users):
+You would have already compiled the code using "mvn compile", so let's get straight to running the code:
 
 ```
-$ run.bat
+java -cp target/classes edu.pitt.cs.Rand
 ```
 
-To run JPF with Rand:
+As we learned in the lecture, the program output is nondeterministic due to the
+random number generaiton.  You have to rely on dumb luck to find the defect
+which is the divide-by-zero exception on the calculation for "c".
+
+Using JPF, you can *always* deterministically find the defect using systematic
+state space exploration.
+
+To run JPF on Rand do (.bat for WIndows, .sh for Mac/Linux):
 
 ```
-$ runJPF.bat Rand.jpf
+.\runJPF.bat Rand.jpf
+```
+```
+bash runJPF.sh Rand.jpf
 ```
 
-For Mac or Linux users, please run the corresponding .sh scripts.
-
-Then, you should get the following output:
+If you see the following output, you are not using Java 8 to run JPF:
 
 ```
-wahn:Rand wahn$ bash runJPF.sh Rand.jpf
+$ java -ea -jar jpf-core/build/RunJPF.jar +site=./site.properties Rand.jpf
+[SEVERE] JPF configuration error: error instantiating class gov.nasa.jpf.vm.OVHeap for entry "vm.heap.class":
+> exception in gov.nasa.jpf.vm.OVHeap(gov.nasa.jpf.Config,gov.nasa.jpf.vm.KernelState):
+>> java.lang.NoClassDefFoundError: sun/misc/SharedSecrets
+> used within "vm.class" instantiation of class gov.nasa.jpf.vm.SingleProcessVM
+[SEVERE] JPF terminated
+```
+
+Please check "java -version" again and retry after setting up.
+
+If you see the following output, JPF is running correctly:
+
+```
+$ java -ea -jar jpf-core/build/RunJPF.jar +site=./site.properties Rand.jpf 
 JavaPathfinder core system v8.0 (rev 471fa3b7c6a9df330160844e6c2e4ebb4bf06b6c) - (C) 2005-2014 United States Government. All rights reserved.
 
 
 ====================================================== system under test
-Rand.main()
+edu.pitt.cs.Rand.main()
 
-====================================================== search started: 11/8/21 1:32 PM
+====================================================== search started: 7/25/22 1:52 PM
 computing c = a/(b+a - 2)..
 a=0
   b=0       ,a=0
@@ -291,26 +371,26 @@ a=0
 ====================================================== error 1
 gov.nasa.jpf.vm.NoUncaughtExceptionsProperty
 java.lang.ArithmeticException: division by zero
-	at Rand.main(Rand.java:41)
+        at edu.pitt.cs.Rand.main(edu/pitt/cs/Rand.java:42)
 
 
 ====================================================== trace #1
 ------------------------------------------------------ transition #0 thread: 0
 gov.nasa.jpf.vm.choice.ThreadChoiceFromSet {id:"ROOT" ,1/1,isCascaded:false}
       [3168 insn w/o sources]
-  Rand.java:30                   : System.out.println("computing c = a/(b+a - 2)..");
+  edu/pitt/cs/Rand.java:31       : System.out.println("computing c = a/(b+a - 2)..");
 ...
 ------------------------------------------------------ transition #1 thread: 0
 gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..1,delta=+1,cur=0]
       [2 insn w/o sources]
-  Rand.java:33                   : int a = random.nextInt(2); // (2)
+  edu/pitt/cs/Rand.java:34       : int a = random.nextInt(2); // (2)
 ...
 ------------------------------------------------------ transition #2 thread: 0
 gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..2,delta=+1,cur=2]
       [2 insn w/o sources]
-  Rand.java:38                   : int b = random.nextInt(3); // (3)
+  edu/pitt/cs/Rand.java:39       : int b = random.nextInt(3); // (3)
 ...
-  Rand.java:41                   : int c = a / (b + a - 2); // (4)
+  edu/pitt/cs/Rand.java:42       : int c = a / (b + a - 2); // (4)
 a=1
   b=0       ,a=1
 =>  c=-1     , b=0, a=1
@@ -319,26 +399,26 @@ a=1
 ====================================================== error 2
 gov.nasa.jpf.vm.NoUncaughtExceptionsProperty
 java.lang.ArithmeticException: division by zero
-	at Rand.main(Rand.java:41)
+        at edu.pitt.cs.Rand.main(edu/pitt/cs/Rand.java:42)
 
 
 ====================================================== trace #2
 ------------------------------------------------------ transition #0 thread: 0
 gov.nasa.jpf.vm.choice.ThreadChoiceFromSet {id:"ROOT" ,1/1,isCascaded:false}
       [3168 insn w/o sources]
-  Rand.java:30                   : System.out.println("computing c = a/(b+a - 2)..");
+  edu/pitt/cs/Rand.java:31       : System.out.println("computing c = a/(b+a - 2)..");
 ...
 ------------------------------------------------------ transition #1 thread: 0
 gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..1,delta=+1,cur=1]
       [2 insn w/o sources]
-  Rand.java:33                   : int a = random.nextInt(2); // (2)
+  edu/pitt/cs/Rand.java:34       : int a = random.nextInt(2); // (2)
 ...
 ------------------------------------------------------ transition #2 thread: 0
 gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..2,delta=+1,cur=1]
       [2 insn w/o sources]
-  Rand.java:38                   : int b = random.nextInt(3); // (3)
+  edu/pitt/cs/Rand.java:39       : int b = random.nextInt(3); // (3)
 ...
-  Rand.java:41                   : int c = a / (b + a - 2); // (4)
+  edu/pitt/cs/Rand.java:42       : int c = a / (b + a - 2); // (4)
   b=2       ,a=1
 =>  c=1     , b=2, a=1
 
@@ -353,17 +433,18 @@ search:             maxDepth=3,constraints=0
 choice generators:  thread=1 (signal=0,lock=1,sharedRef=0,threadApi=0,reschedule=0), data=3
 heap:               new=950,released=52,maxLive=619,gcCycles=7
 instructions:       3545
-max memory:         123MB
+max memory:         979MB
 loaded code:        classes=66,methods=1371
 
-====================================================== search finished: 11/8/21 1:32 PM
-
+====================================================== search finished: 7/25/22 1:52 PM
 ```
 
-Since you enabled both error and trace output on [Rand.jpf](src/Rand.jpf):
+Since you enabled both error and trace output on [Rand.jpf](Rand.jpf):
+
 ```
 report.console.property_violation=error,trace
 ```
+
 The console output will include a description of the error whenever a
 property violation (i.e. Java exception) occurs, as well as the execution
 trace leading up to that error.
@@ -391,7 +472,7 @@ The IntIntervalGenerator enumerates all integers in a range of values and
 goes down the program path for each generated integer.  You can see that it
 was invoked in response to the following program statement:
 ```
-  Rand.java:33                   : int a = random.nextInt(2); // (2)
+  Rand.java:34                   : int a = random.nextInt(2); // (2)
 ```
 What JPF does is to generate two integers in the range "0..1" with a delta
 of 1, so two integers 0 and 1.  It will try out both possibilities.  The
@@ -407,26 +488,22 @@ the code and identify why each error occurred.
 ### Applying JPF on DrunkCarnivalShooter
 
 Now let's cd out of the Rand directory to the root directory to once again work
-on DrunkCarnivalShooter.  The following script applies JPF to
-DrunkCarnivalShooter.
+on DrunkCarnivalShooter.  The following command applies JPF to the program.
 
-For Windows users:
-
-```
-$ runJPF.bat DrunkCarnivalShooter.win.jpf
-```
-
-For Mac/Linux users:
+To run JPF on DrunkCarnivalShooter do (.bat for WIndows, .sh for Mac/Linux):
 
 ```
-$ bash runJPF.sh DrunkCarnivalShooter.macos.jpf
+.\runJPF.bat DrunkCarnivalShooter.jpf
+```
+```
+bash runJPF.sh DrunkCarnivalShooter.jpf
 ```
 
 If you run the above, JPF will display an output similar to the following:
 
 ```
 ...
-====================================================== search started: 10/25/21 9:54 PM
+====================================================== search started: 7/25/22 2:02 PM
 Round #0:  ||    ||    ||    ||
 Choose your target (0-3):
 
@@ -453,20 +530,18 @@ Then replace calls to Scanner with calls to Verify only when the commandline
 argument "test" is passed to the program.  The "test" argument will put the
 program in test mode and not in play mode.  You can see "test" is already
 configured as the commandline argument in the target.args entry in
-[DrunkCarnivalShooter.win.jpf](DrunkCarnivalShooter/DrunkCarnivalShooter.win.jpf).
-This will allow us to still play game the game in normal mode.
+[DrunkCarnivalShooter.jpf](DrunkCarnivalShooter.jpf).
 
-In test mode, do not create Scanner and instead of scanning user input using
-the following statement:
+In terms of the code, all you have to do is on the // TODO comment, call:
 
 ```
-int t = scanner.nextInt();
+t = Verify.getInt(0, 3);
 ```
 
-replace it with the following:
+Instead of:
 
 ```
-int t = Verify.getInt(0, 3);
+t = scanner.nextInt();
 ```
 
 The above will direct JPF to generate 4 states each where t is set to 0, 1, 2,
@@ -475,23 +550,37 @@ wish, you can test a larger set of numbers beyond 0-3.  It is just going to
 generate more states and take longer (the flipside being you will be able to
 model check your program against a larger set of inputs).
 
-Now let's try running runJPF.bat one more time like the above.  This will show
-a new error message due to an exception:
+Now let's recompile:
 
 ```
-====================================================== search started: 10/25/21 10:01 PM
-Round #0:  ||    ||    ||    ||
+mvn compile
+```
+
+And try running JPF one more time:
+
+```
+.\runJPF.bat DrunkCarnivalShooter.jpf
+```
+```
+bash runJPF.sh DrunkCarnivalShooter.jpf
+```
+
+This will show a new error message due to an exception:
+
+```
+====================================================== search started: 7/25/22 4:24 PM
+Round #0:  ||    ||    ||    ||  
 Choose your target (0-3):
 
 ====================================================== error 1
 gov.nasa.jpf.vm.NoUncaughtExceptionsProperty
 java.lang.ArrayIndexOutOfBoundsException: -1
-        at java.util.ArrayList.elementData(java/util/ArrayList.java:422)
-        at java.util.ArrayList.get(java/util/ArrayList.java:435)
-        at DrunkCarnivalShooterImpl.isTargetStanding(DrunkCarnivalShooterImpl.java:124)
-        at DrunkCarnivalShooterImpl.takeDownTarget(DrunkCarnivalShooterImpl.java:108)
-        at DrunkCarnivalShooterImpl.shoot(DrunkCarnivalShooterImpl.java:89)
-        at DrunkCarnivalShooterImpl.main(DrunkCarnivalShooterImpl.java:163)
+        at java.util.ArrayList.elementData(java/util/ArrayList.java:424)
+        at java.util.ArrayList.get(java/util/ArrayList.java:437)
+        at edu.pitt.cs.DrunkCarnivalShooterImpl.isTargetStanding(edu/pitt/cs/DrunkCarnivalShooterImpl.java:127)
+        at edu.pitt.cs.DrunkCarnivalShooterImpl.takeDownTarget(edu/pitt/cs/DrunkCarnivalShooterImpl.java:111)
+        at edu.pitt.cs.DrunkCarnivalShooterImpl.shoot(edu/pitt/cs/DrunkCarnivalShooterImpl.java:92)
+        at edu.pitt.cs.DrunkCarnivalShooterImpl.main(edu/pitt/cs/DrunkCarnivalShooterImpl.java:173)
 ...
 ```
 
@@ -504,22 +593,18 @@ did Rand.trace.  The trace should look like:
 ====================================================== trace #1
 ------------------------------------------------------ transition #0 thread: 0
 gov.nasa.jpf.vm.choice.ThreadChoiceFromSet {id:"ROOT" ,1/1,isCascaded:false}
-      [50072 insn w/o sources]
-DrunkCarnivalShooterImpl.java:152 : DrunkCarnivalShooterImpl shooter = new DrunkCarnivalShooterImpl();
+      [6345 insn w/o sources]
+  edu/pitt/cs/DrunkCarnivalShooterImpl.java:153 : DrunkCarnivalShooterImpl shooter = new DrunkCarnivalShooterImpl();
 ...
 ------------------------------------------------------ transition #1 thread: 0
-gov.nasa.jpf.vm.choice.BreakGenerator {id:"MAX_TRANSITION_LENGTH" ,1/1,isCascaded:false}
-      [48603 insn w/o sources]
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..3,delta=+1,cur=0]
+      [2 insn w/o sources]
+  edu/pitt/cs/DrunkCarnivalShooterImpl.java:166 : t = Verify.getInt(0, 3);
 ...
 ------------------------------------------------------ transition #2 thread: 0
-gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..3,delta=+1,cur=0]
-      [22 insn w/o sources]
-DrunkCarnivalShooterImpl.java:158 : int t = Verify.getInt(0, 3);
-...
------------------------------------------------------- transition #3 thread: 0
 gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..2,delta=+1,cur=0]
-      [64 insn w/o sources]
-DrunkCarnivalShooterImpl.java:47 : int offsetNum = rand.nextInt(3) - 1;
+      [2 insn w/o sources]
+  edu/pitt/cs/DrunkCarnivalShooterImpl.java:48 : int offsetNum = rand.nextInt(3) - 1;
 ...
 ```
 
@@ -544,20 +629,35 @@ explore all thread interleavings.  If you don't know what that means, don't
 worry about it.  It is beyond the scope of this class.  Feel free to ask if you
 are curious :).
 
-In the above trace, it is important to understand transitions #2 and #3.  What
-would be transition #2 with choice interval 0..3?  It would be the
+In the above trace, it is important to understand transitions #1 and #2.  What
+would be transition #1 with choice interval 0..3?  It would be the
 Verify.getInt(0, 3) that replaced the scan of user input.  And according to the
-trace it returned 0 ("cur=0").  What would be transition #3 with choice
+trace it returned 0 ("cur=0").  What would be transition #2 with choice
 interval 0..2?  It would be the rand.nextInt(3) used to add randomness to the
 shooting target, and in the trace it also returned 0 ("cur=0").  So it's the
 case where the user chose target 0 and the randomness of the shooting pulled
 the bullet to the left.  What's on the left side of target 0?  That should help
 you track down the problem.  **Hint: What happens when t becomes -1 in isTargetStanding?**
 
-Once you fix these bugs, try running runJPF.bat one more time.  Now that you
-have fixed the buggy state JPF runs for much longer.  In fact, JPF is going to
-fall into an infinite loop and generate an infinite number of states (observed
-by the ever increasing Round number).
+Once you fix these bugs, try running JPF one more time (but be ready to quickly press Ctrl+C
+because it is going to fall into an infinite loop):
+
+```
+mvn compile
+```
+
+Then one of the below:
+
+```
+.\runJPF.bat DrunkCarnivalShooter.jpf
+```
+```
+bash runJPF.sh DrunkCarnivalShooter.jpf
+```
+
+Press Ctrl+C now, or your process is going to run out of memory!  Since JPF does 
+not encounter any exceptions it will run indefinitely and also generate an infinite
+number of states (observed by the infinite number of rounds):
 
 ```
 ...
@@ -647,15 +747,11 @@ We will choose the latter option.
 
 ### Applying JPF on JUnit to Unit Test DrunkCarnivalShooter
 
-Now we are not systems testing DrunkCarnivalShooter.  We want to invoke JUnit
-on DrunkCarnivalShooter.  The script to do that is as follows:
+To run JPF on JUnit do (.bat for WIndows, .sh for Mac/Linux):
 
 ```
-runJPF.bat JUnit.win.jpf
+.\runJPF.bat JUnit.win.jpf
 ```
-
-For Mac or Linux:
-
 ```
 bash runJPF.sh JUnit.macos.jpf
 ```
@@ -664,11 +760,15 @@ If you peek into JUnit.win.jpf (or JUnit.macos.jpf), you will notice that now
 the execution target is set to TestRunner instead of DrunkCarnivalShooter:
 
 ```
-target = TestRunner
+target = edu.pitt.cs.TestRunner
 ```
 
-TestRunner invokes JUnit on the DrunkCarnivalShooterTest test class.  As is,
-DrunkCarnivalShooterTest.java is incomplete and does not do much.  Fill in the
+TestRunner.java is a class I wrote that invokes the JUnitCore.runClasses API on
+our DrunkCarnivalShooterTest.java JUnit class.  The returned Result object can
+be probed to enumerate failures.
+
+Now let's focus our attention on DrunkCarnivalShooterTest.java itself. As is, it is
+incomplete and does not do much.  Fill in the
 locations with // TODO comments inside DrunkCarnivalShooterTest.java.  In the
 setUp method, use the Verify API such that you enumerate all the 16 possible
 states that the game can be in, as well as the target choice made by the user
@@ -695,8 +795,136 @@ led to the failure, which helps you debug the problem.  Feel free to append
 additional information to the failString that may help you debug.
 
 If you implemented the test properly, you should see a long list of errors for
-different combinations.  Debug DrunkCarnivalShooterImpl to remove the errors.
-Now if you play the game, you should not see any defects.
+different combinations:
+
+```
+$ bash runJPF.sh JUnit.macos.jpf 
+JavaPathfinder core system v8.0 (rev 471fa3b7c6a9df330160844e6c2e4ebb4bf06b6c) - (C) 2005-2014 United States Government. All rights reserved.
+
+
+====================================================== system under test
+TestRunner.main()
+
+====================================================== search started: 7/25/22 6:41 PM
+testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||               (targetChoice=0): expected:<0> but was:<-1>
+testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||          ||   (targetChoice=0): expected:<1> but was:<0>
+testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||    ||         (targetChoice=0): expected:<1> but was:<0>
+testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||    ||    ||   (targetChoice=0): expected:<2> but was:<1>
+testShoot(DrunkCarnivalShooterTest): Failure in Round #0:  ||                     (targetChoice=0): expected:<0> but was:<-1>
+...
+
+====================================================== results
+no errors detected
+
+====================================================== statistics
+elapsed time:       00:00:01
+states:             new=156,visited=161,backtracked=317,end=192
+search:             maxDepth=7,constraints=0
+choice generators:  thread=1 (signal=0,lock=1,sharedRef=0,threadApi=0,reschedule=0), data=125
+heap:               new=20683,released=37388,maxLive=1649,gcCycles=317
+instructions:       473440
+max memory:         155MB
+loaded code:        classes=284,methods=4039
+
+====================================================== search finished: 7/25/22 6:41 PM
+
+```
+
+Each line in the "search" section is a JUnit test failure recorded for a particular path explored by JPF.
+In this case, each path corresponds to a configuration of targets and the target choice.
+
+### Obtaining a trace of a JUnit Failure from JPF
+
+You will notice that in the above output, the "results" section reports
+"no errors detected".  And since no errors were detected, no traces were collected.
+Why did this happen?  The JUnit framework has a habit of catching all exceptions thrown
+by your tested method or assertions resulting in test failures, so that it can aggregate them and report
+them later.  If it did not catch exceptions, the JUnit framework would have to stop at
+the very first failure!  This behavior prevents exceptions from being thrown 
+directly at JPF, and JPF needs exceptions thrown at it to know when failures
+occurred and be able to generate traces for those failures.
+
+In order to obtain a trace, uncomment the following line from JUnit.win.jpf, or JUnit.macos.jpf if you are Mac/Linux:
+
+```
+#Main method arguments.  Enable if you want to obtain a trace of a JUnit faiure.
+#target.args = trace
+```
+
+So that the argument "trace" is passed to TestRunner.java.
+
+In that case, TestRunner "emulates" what the JUnit framework would do on the DrunkCarnivalShooterTest
+class, rather than invoke JUnitCore.  It does this by using Java reflection to search for @Before, @Test, and @After methods,
+and invoking them in the order JUnit would have.
+The important thing is, in this emulation mode, TestRunner does not
+catch any exceptions, so any test failure (in fact the very first failure) will
+result in an exception and a trace in JPF.
+
+The output of runJPF.bat or runJPF.sh after making the above change would look like:
+
+```
+.\runJPF.bat .\JUnit.win.jpf
+
+D:\github\cs1632\CS1632_Summer2022\exercises\5>java -ea -jar jpf-core/build/RunJPF.jar +site=./site.properties .\JUnit.win.jpf 
+JavaPathfinder core system v8.0 (rev 2f8f3c4dc847b8945fc13d2cb60896fc9c34265b) - (C) 2005-2014 United States Government. All rights reserved.
+
+
+====================================================== system under test
+edu.pitt.cs.TestRunner.main("trace")
+
+====================================================== search started: 7/25/22 6:58 PM
+TRACE GENERATION FOR FIRST FAILURE
+
+
+====================================================== error 1
+gov.nasa.jpf.vm.NoUncaughtExceptionsProperty
+java.lang.reflect.InvocationTargetException: java.lang.AssertionError
+        at org.junit.Assert.fail(org/junit/Assert.java:88)
+        ...
+
+====================================================== trace #1
+------------------------------------------------------ transition #0 thread: 0
+gov.nasa.jpf.vm.choice.ThreadChoiceFromSet {id:"ROOT" ,1/1,isCascaded:false}
+...
+------------------------------------------------------ transition #1 thread: 0
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..3,delta=+1,cur=0]
+...
+------------------------------------------------------ transition #2 thread: 0
+gov.nasa.jpf.vm.BooleanChoiceGenerator[[id="verifyGetBoolean",isCascaded:false,{>false,true}]
+...
+------------------------------------------------------ transition #3 thread: 0
+gov.nasa.jpf.vm.BooleanChoiceGenerator[[id="verifyGetBoolean",isCascaded:false,{false,>true}]
+...
+------------------------------------------------------ transition #4 thread: 0
+gov.nasa.jpf.vm.BooleanChoiceGenerator[[id="verifyGetBoolean",isCascaded:false,{>false,true}]
+...
+------------------------------------------------------ transition #5 thread: 0
+gov.nasa.jpf.vm.BooleanChoiceGenerator[[id="verifyGetBoolean",isCascaded:false,{>false,true}]
+,,,
+------------------------------------------------------ transition #6 thread: 0
+gov.nasa.jpf.vm.choice.IntIntervalGenerator[id="verifyGetInt(II)",isCascaded:false,0..2,delta=+1,cur=2]
+      [2 insn w/o sources]
+  edu/pitt/cs/DrunkCarnivalShooterImpl.java:49 : int offsetNum = rand.nextInt(3) - 1;
+...
+edu/pitt/cs/DrunkCarnivalShooterImpl.java:114 : remainingTargetNum--;
+...
+edu/pitt/cs/DrunkCarnivalShooterImpl.java:95 : remainingTargetNum--;
+...
+edu/pitt/cs/DrunkCarnivalShooterTest.java:112 : assertEquals(failString, standing, shooter.getRemainingTargetNum());
+
+====================================================== results
+error #1: gov.nasa.jpf.vm.NoUncaughtExceptionsProperty "java.lang.reflect.InvocationTargetException: java...."
+...
+```
+
+Through this trace you can see what choices were made on this path,
+starting from generation of the targetChoice and target states, ending in the
+random number generation for the fuzzing.  You can also see on the 
+trace remainingTargetNum, a key variable in this defect, getting decremented
+twice.
+
+Debug DrunkCarnivalShooterImpl using this trace.  Now if you play the
+game, you should not see any defects.
 
 ### Lessons on Model Checking
 
