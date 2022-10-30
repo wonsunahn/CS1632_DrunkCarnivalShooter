@@ -18,6 +18,7 @@
   - [Submission](#submission-1)
   - [GradeScope Feedback](#gradescope-feedback)
   - [Resources](#resources-1)
+- [Groupwork Plan](#groupwork-plan)
 
 # Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
 
@@ -1021,3 +1022,13 @@ http://javapathfinder.sourceforge.net/
 
 * Java Path Finder Verify API:  
 https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
+
+# Groupwork Plan
+
+I expect each group member to experience Java Path Finder for him/herself.
+I created individual repositories for each of you, so that you can find the
+errors and debug at your own pace.  You can also submit your repositories
+individually on GradeScope.  If one of you are having issues with resolving
+a problem, ask your partner and try to get to a place where both of you get
+a full score.  When you get to this place, you can simply merge your
+submission into one submission of your choosing.
