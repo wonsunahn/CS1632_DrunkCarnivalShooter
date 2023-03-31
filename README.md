@@ -26,7 +26,7 @@ Spring Semester 2023 - Exercise 5
 
 * DUE: March 24 (Friday), 2023 11:59 PM
 
-**GitHub Classroom Link:** TBD
+**GitHub Classroom Link:** https://classroom.github.com/a/0gKWqLbz
 
 ## Description
 
@@ -263,9 +263,7 @@ the group.  The submitting member will press the "View or edit group" link at
 the top-right corner of the assignment page after submission to add his/her
 partner.  
 
-You will create a github repository just for exercise 5, as usual.  Add your
-partner as a collaborator so both of you have access.  Make sure you keep the
-repository *PRIVATE* so that nobody else can access your repository.  When you
+When you
 are done, submit your github repository to GradeScope at the **Exercise 5 Part
 1 GitHub** link.  Once you submit, GradeScope will run the autograder to grade
 you and give feedback.  If you get deductions, fix your code based on the
