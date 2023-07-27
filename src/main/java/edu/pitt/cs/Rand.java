@@ -37,7 +37,7 @@ public class Rand {
 		// ... lots of code here
 
 		int b = random.nextInt(3); // (3)
-		System.out.printf("  b=%d       ,a=%d%n", b, a);
+		System.out.printf("  b=%d       , a=%d%n", b, a);
 
 		int c = a / (b + a - 2); // (4)
 
