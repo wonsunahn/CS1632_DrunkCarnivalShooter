@@ -22,11 +22,11 @@
 
 # Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
 
-Spring Semester 2023 - Exercise 5
+Summer Semester 2023 - Exercise 5
 
-* DUE: March 24 (Friday), 2023 11:59 PM
+* DUE: August 1 (Tuesday), 2023 11:30 PM
 
-**GitHub Classroom Link:** https://classroom.github.com/a/0gKWqLbz
+**GitHub Classroom Link:** TBD
 
 ## Description
 
@@ -282,21 +282,16 @@ https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
 
 # Exercise 5 - Static Analysis Part 2: Model Checking
 
-* DUE: March 31 (Friday), 2023 11:59 PM
+* DUE: August 1 (Tuesday), 2023 11:30 PM
 
 In Part 2, you will use a model checker named Java Pathfinder (JPF) to prove
 various correctness properties in your program.
 
-* IMPORTANT: You need Java 8 (1.8.0.231, preferably) to run the Java Path
-  Finder model checker.  Make sure you have the correct Java version by
-doing "java -version" and "javac -version" before going into the JPF
-section.  If you don't have the correct version, here is a link to a folder
-with installation packages for each OS:
-
-https://drive.google.com/drive/folders/1E76H7y2nMsrdiBwJi0nwlzczAgTKKhv7
-
-Please refer Exercise 0: Java Assessment for instructions on how to set up
-your PATH environment variable.
+* IMPORTANT: You need Java 8 to run the Java Path Finder model checker. Make
+  sure you have the correct Java version by doing "java -version" and "javac
+-version" before going into the JPF section. Please refer to Exercise 0: Java
+Assessment for instructions on how to install JDK 8 and set up your PATH
+environment variable.
 
 ## Applying Java Pathfinder (JPF)
 
@@ -356,7 +351,7 @@ JavaPathfinder core system v8.0 (rev 471fa3b7c6a9df330160844e6c2e4ebb4bf06b6c) -
 ====================================================== system under test
 edu.pitt.cs.Rand.main()
 
-====================================================== search started: 3/15/23 1:52 PM
+====================================================== search started: 7/15/23 1:52 PM
 computing c = a/(b+a - 2)..
 a=0
   b=0       ,a=0
@@ -433,7 +428,7 @@ instructions:       3545
 max memory:         979MB
 loaded code:        classes=66,methods=1371
 
-====================================================== search finished: 3/15/23 1:52 PM
+====================================================== search finished: 7/15/23 1:52 PM
 ```
 
 Since you enabled both error and trace output on [Rand.jpf](Rand.jpf):
@@ -579,7 +574,7 @@ bash runJPF.sh DrunkCarnivalShooter.jpf
 This will show a new error message due to an exception:
 
 ```
-====================================================== search started: 3/15/23 4:24 PM
+====================================================== search started: 7/15/23 4:24 PM
 Round #0:  ||    ||    ||    ||  
 Choose your target (0-3):
 
@@ -829,7 +824,7 @@ JavaPathfinder core system v8.0 (rev 471fa3b7c6a9df330160844e6c2e4ebb4bf06b6c) -
 ====================================================== system under test
 TestRunner.main()
 
-====================================================== search started: 3/15/23 6:41 PM
+====================================================== search started: 7/15/23 6:41 PM
 testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||               (targetChoice=0): expected:<0> but was:<-1>
 testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||          ||   (targetChoice=0): expected:<1> but was:<0>
 testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||    ||         (targetChoice=0): expected:<1> but was:<0>
@@ -850,7 +845,7 @@ instructions:       473440
 max memory:         155MB
 loaded code:        classes=284,methods=4039
 
-====================================================== search finished: 3/15/23 6:41 PM
+====================================================== search finished: 7/15/23 6:41 PM
 
 ```
 
@@ -889,14 +884,14 @@ The output of runJPF.bat or runJPF.sh after making the above change would look l
 ```
 .\runJPF.bat .\JUnit.win.jpf
 
-D:\github\cs1632\CS1632_Spring2023\exercises\5>java -ea -jar jpf-core/build/RunJPF.jar +site=./site.properties .\JUnit.win.jpf 
+D:\github\cs1632\CS1632_Summer2023\exercises\5>java -ea -jar jpf-core/build/RunJPF.jar +site=./site.properties .\JUnit.win.jpf 
 JavaPathfinder core system v8.0 (rev 2f8f3c4dc847b8945fc13d2cb60896fc9c34265b) - (C) 2005-2014 United States Government. All rights reserved.
 
 
 ====================================================== system under test
 edu.pitt.cs.TestRunner.main("trace")
 
-====================================================== search started: 3/15/23 6:58 PM
+====================================================== search started: 7/15/23 6:58 PM
 TRACE GENERATION FOR FIRST FAILURE
 
 
