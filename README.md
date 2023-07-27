@@ -26,7 +26,7 @@ Summer Semester 2023 - Exercise 5
 
 * DUE: August 1 (Tuesday), 2023 11:30 PM
 
-**GitHub Classroom Link:** TBD
+**GitHub Classroom Link:** https://classroom.github.com/a/ivyJA_Uo
 
 ## Description
 
@@ -49,7 +49,7 @@ or right as shooting straight.  Refer to the file
 also try playing it yourself using the reference implementation:
 
 ```
-$ java -jar DrunkCarnivalShooter.jar
+java -jar DrunkCarnivalShooter.jar
 ```
 
 To run the DrunkCarnivalShooter using the current implementation, you first need compile it.
