@@ -22,11 +22,11 @@
 
 # Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
 
-Summer Semester 2023 - Exercise 5
+Fall Semester 2023 - Exercise 5
 
-* DUE: August 1 (Tuesday), 2023 11:30 PM
+* DUE: November 3 (Friday), 2023 11:59 PM
 
-**GitHub Classroom Link:** https://classroom.github.com/a/ivyJA_Uo
+**GitHub Classroom Link:** TBD
 
 ## Description
 
@@ -282,7 +282,7 @@ https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
 
 # Exercise 5 - Static Analysis Part 2: Model Checking
 
-* DUE: August 1 (Tuesday), 2023 11:30 PM
+* DUE: August 10 (Friday), 2023 11:59 PM
 
 In Part 2, you will use a model checker named Java Pathfinder (JPF) to prove
 various correctness properties in your program.
@@ -884,7 +884,7 @@ The output of runJPF.bat or runJPF.sh after making the above change would look l
 ```
 .\runJPF.bat .\JUnit.win.jpf
 
-D:\github\cs1632\CS1632_Summer2023\exercises\5>java -ea -jar jpf-core/build/RunJPF.jar +site=./site.properties .\JUnit.win.jpf 
+D:\github\cs1632\CS1632_Fall2023\exercises\5>java -ea -jar jpf-core/build/RunJPF.jar +site=./site.properties .\JUnit.win.jpf 
 JavaPathfinder core system v8.0 (rev 2f8f3c4dc847b8945fc13d2cb60896fc9c34265b) - (C) 2005-2014 United States Government. All rights reserved.
 
 
