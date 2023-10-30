@@ -65,7 +65,7 @@ public class DrunkCarnivalShooterTest {
 	 * Preconditions: targetChoice has been initialized with a target number.
 	 *                shooter is instantiated with DrunkCarnivalShooter.createInstance() with preconfigured targets.
 	 *                builder is instantiated with new StringBuilder().
-	 * >Execution steps: Call shooter.shoot(targetChoice, builder);
+	 * Execution steps: Call shooter.shoot(targetChoice, builder);
 	 * Invariant: The number of targets which returns true on shooter.isTargetStanding(i)
 	 *            where i = 0 ... 3 is equal to shooter.getRemainingTargetNum().
 	 * </pre>
