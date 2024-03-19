@@ -22,7 +22,7 @@ public interface DrunkCarnivalShooter {
 			case BUGGY:
 				return new DrunkCarnivalShooterBuggy();
 			default:
-				assert(false);
+				assert (false);
 				return null;
 		}
 	}
