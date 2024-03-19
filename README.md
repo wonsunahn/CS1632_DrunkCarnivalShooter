@@ -9,7 +9,7 @@
   * [Submission](#submission)
   * [Resources](#resources)
 - [Exercise 5 - Static Analysis Part 2: Model Checking](#exercise-5---static-analysis-part-2-model-checking)
-  * [Applying Java Pathfinder (JPF)](#applying-java-pathfinder--jpf-)
+  * [Applying Java Pathfinder (JPF)](#applying-java-pathfinder-jpf)
     + [Applying JPF on Rand](#applying-jpf-on-rand)
     + [Applying JPF on DrunkCarnivalShooter](#applying-jpf-on-drunkcarnivalshooter)
     + [Applying JPF on JUnit to Unit Test DrunkCarnivalShooter](#applying-jpf-on-junit-to-unit-test-drunkcarnivalshooter)
