@@ -22,9 +22,9 @@
 
 # Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
 
-Fall Semester 2023 - Exercise 5
+Spring Semester 2024 - Exercise 5
 
-* DUE: November 3 (Friday), 2023 11:59 PM
+* DUE: March 24 (Sunday), 2024 11:59 PM
 
 **GitHub Classroom Link:** TBD
 
@@ -282,7 +282,7 @@ https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
 
 # Exercise 5 - Static Analysis Part 2: Model Checking
 
-* DUE: August 10 (Friday), 2023 11:59 PM
+* DUE: March 31 (Sunday), 2024 11:59 PM
 
 In Part 2, you will use a model checker named Java Pathfinder (JPF) to prove
 various correctness properties in your program.
@@ -351,7 +351,7 @@ JavaPathfinder core system v8.0 (rev 471fa3b7c6a9df330160844e6c2e4ebb4bf06b6c) -
 ====================================================== system under test
 edu.pitt.cs.Rand.main()
 
-====================================================== search started: 7/15/23 1:52 PM
+====================================================== search started: 3/15/24 1:52 PM
 computing c = a/(b+a - 2)..
 a=0
   b=0       ,a=0
@@ -428,7 +428,7 @@ instructions:       3545
 max memory:         979MB
 loaded code:        classes=66,methods=1371
 
-====================================================== search finished: 7/15/23 1:52 PM
+====================================================== search finished: 3/15/24 1:52 PM
 ```
 
 Since you enabled both error and trace output on [Rand.jpf](Rand.jpf):
@@ -522,7 +522,7 @@ while (true) {
 
 Why did I have to do this?  That is because JPF is not designed to take user
 input.  If it were to take user input, then the test coverage of JPF will be
-beholden to what input the user chooses.  The gaol of JPF (and any other
+beholden to what input the user chooses.  The goal of JPF (and any other
 model checker) is to verify the program **regardless of user input**.
 
 JPF provides a set of APIs under the Verify class (gov.nasa.jpf.vm.Verify)
@@ -574,7 +574,7 @@ bash runJPF.sh DrunkCarnivalShooter.jpf
 This will show a new error message due to an exception:
 
 ```
-====================================================== search started: 7/15/23 4:24 PM
+====================================================== search started: 3/15/24 4:24 PM
 Round #0:  ||    ||    ||    ||  
 Choose your target (0-3):
 
@@ -695,7 +695,7 @@ thing that constantly changes every round is the round number --- and that is
 the culprit leading to the state explosion.  The round number is not something
 we are interested in verifying right now.  So, let's filter that state out!
 
-Import the appropriate JPF library at the top of DrunkCarnivalShooter.java again:
+Import the appropriate JPF library at the top of DrunkCarnivalShooterImpl.java again:
 
 ```
 import gov.nasa.jpf.annotation.FilterField;
@@ -824,7 +824,7 @@ JavaPathfinder core system v8.0 (rev 471fa3b7c6a9df330160844e6c2e4ebb4bf06b6c) -
 ====================================================== system under test
 TestRunner.main()
 
-====================================================== search started: 7/15/23 6:41 PM
+====================================================== search started: 3/15/24 6:41 PM
 testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||               (targetChoice=0): expected:<0> but was:<-1>
 testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||          ||   (targetChoice=0): expected:<1> but was:<0>
 testShoot(DrunkCarnivalShooterTest): Failure in Round #0:        ||    ||         (targetChoice=0): expected:<1> but was:<0>
@@ -845,7 +845,7 @@ instructions:       473440
 max memory:         155MB
 loaded code:        classes=284,methods=4039
 
-====================================================== search finished: 7/15/23 6:41 PM
+====================================================== search finished: 3/15/24 6:41 PM
 
 ```
 
@@ -884,14 +884,14 @@ The output of runJPF.bat or runJPF.sh after making the above change would look l
 ```
 .\runJPF.bat .\JUnit.win.jpf
 
-D:\github\cs1632\CS1632_Fall2023\exercises\5>java -ea -jar jpf-core/build/RunJPF.jar +site=./site.properties .\JUnit.win.jpf 
+D:\github\cs1632\CS1632_Spring2024\exercises\5>java -ea -jar jpf-core/build/RunJPF.jar +site=./site.properties .\JUnit.win.jpf 
 JavaPathfinder core system v8.0 (rev 2f8f3c4dc847b8945fc13d2cb60896fc9c34265b) - (C) 2005-2014 United States Government. All rights reserved.
 
 
 ====================================================== system under test
 edu.pitt.cs.TestRunner.main("trace")
 
-====================================================== search started: 7/15/23 6:58 PM
+====================================================== search started: 3/15/24 6:58 PM
 TRACE GENERATION FOR FIRST FAILURE
 
 
