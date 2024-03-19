@@ -10,7 +10,8 @@ import gov.nasa.jpf.util.test.TestJPF;
 /**
  * Code by @author Wonsun Ahn
  * 
- * <p>Uses the Java Path Finder model checking tool to check DrunkCarnivalShooter
+ * <p>
+ * Uses the Java Path Finder model checking tool to check DrunkCarnivalShooter
  * shoot method for all scenarios. It enumerates all possible states of the
  * targets as well as all possible target choices by the user.
  */
@@ -25,7 +26,6 @@ public class DrunkCarnivalShooterTest extends TestJPF {
 	/**
 	 * Sets up the test fixture.
 	 */
-	@Before
 	public void setUp() {
 		targets = new boolean[4];
 		/*
@@ -36,7 +36,7 @@ public class DrunkCarnivalShooterTest extends TestJPF {
 		 * Verify API, look at:
 		 * https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 		 */
-
+		
 		// Create the game
 		shooter = DrunkCarnivalShooter.createInstance();
 		// Set up the targets in the game to reflect the targets array
@@ -48,16 +48,6 @@ public class DrunkCarnivalShooterTest extends TestJPF {
 
 		// A failstring useful to pass to assertions to get a more descriptive error.
 		failString = "Failure in " + shooter.getRoundString() + " (targetChoice=" + targetChoice + "):";
-	}
-
-	/**
-	 * Tears down the test fixture.
-	 */
-	@After
-	public void tearDown() {
-		shooter = null;
-		targetChoice = 0;
-		targets = null;
 	}
 
 	/**
@@ -74,6 +64,19 @@ public class DrunkCarnivalShooterTest extends TestJPF {
 	 */
 	@Test
 	public void testShoot() {
+		/*
+		 * When host JVM encounters the verifyNoPropertyViolation(), it invokes the JPF
+		 * VM on this test method. So there are effectively two virtual machines
+		 * executing this method. The verifyNoPropertyViolation() method returns false
+		 * if the executing VM is the host JVM and returns true if it is the JPF VM.
+		 */
+		if (verifyNoPropertyViolation() == false) {
+			// This is the host JVM so return immediately.
+			return;
+		}
+		// This is the JPF VM, so run the test case on top of it, starting from the setUp().
+		setUp();
+
 		// TODO: Implement
 
 		/*
