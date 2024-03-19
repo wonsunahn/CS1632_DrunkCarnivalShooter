@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import gov.nasa.jpf.util.test.TestJPF;
+
 /**
  * Code by @author Wonsun Ahn
  * 
@@ -13,7 +15,7 @@ import static org.junit.Assert.*;
  * targets as well as all possible target choices by the user.
  */
 
-public class DrunkCarnivalShooterTest {
+public class DrunkCarnivalShooterTest extends TestJPF {
 	private DrunkCarnivalShooter shooter; // The game object
 	private boolean[] targets;
 	private String failString; // A descriptive fail string for assertions
