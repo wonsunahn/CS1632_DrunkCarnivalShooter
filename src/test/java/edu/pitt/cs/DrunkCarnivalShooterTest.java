@@ -18,9 +18,8 @@ import gov.nasa.jpf.util.test.TestJPF;
 
 public class DrunkCarnivalShooterTest extends TestJPF {
 	private DrunkCarnivalShooter shooter; // The game object
+	private StringBuilder builder; // The string builder object
 	private boolean[] targets;
-	private String failString; // A descriptive fail string for assertions
-
 	private int targetChoice; // The user inputed target choice to test (can be between 0 - 3)
 
 	/**
@@ -46,8 +45,8 @@ public class DrunkCarnivalShooterTest extends TestJPF {
 			}
 		}
 
-		// A failstring useful to pass to assertions to get a more descriptive error.
-		failString = "Failure in " + shooter.getRoundString() + " (targetChoice=" + targetChoice + "):";
+		// Create the string builder
+		builder = new StringBuilder();
 	}
 
 	/**
@@ -77,8 +76,6 @@ public class DrunkCarnivalShooterTest extends TestJPF {
 		// This is the JPF VM, so run the test case on top of it, starting from the setUp().
 		setUp();
 
-		// TODO: Implement
-
 		/*
 		 * Currently, it just prints out the failString to demonstrate to you all the
 		 * cases considered by Java Path Finder. If you called the Verify API correctly
@@ -98,8 +95,13 @@ public class DrunkCarnivalShooterTest extends TestJPF {
 		 * Failure in Round #0:  ||    ||    ||         (targetChoice=3):
 		 * Failure in Round #0:  ||    ||    ||    ||   (targetChoice=3):
 		 * 
-		 * PLEASE COMMENT OUT when you are done implementing.
+		 * Comment out the println when you are done implementing.
 		 */
+
+		// A failstring useful to pass to assertions to get a more descriptive error.
+		String failString = "Failure in " + shooter.getRoundString() + " (targetChoice=" + targetChoice + "):";
 		System.out.println(failString);
+		
+		// TODO: Implement
 	}
 }
