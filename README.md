@@ -18,14 +18,15 @@
   * [GradeScope Feedback](#gradescope-feedback)
   * [Resources](#resources-1)
 - [Groupwork Plan](#groupwork-plan)
+- [Exercise 5 - Static Analysis Extra Credit](#exercise-5---static-analysis-extra-credit)
 
 # Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
 
-Spring Semester 2024 - Exercise 5
+Fall Semester 2024 - Exercise 5
 
-* DUE: March 24 (Sunday), 2024 11:59 PM
+* DUE: November 4 (Monday), 2024 before start of class
 
-**GitHub Classroom Link:** https://classroom.github.com/a/4wJoAufz
+**GitHub Classroom Link:** TBD
 
 ## Description
 
@@ -281,7 +282,7 @@ https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
 
 # Exercise 5 - Static Analysis Part 2: Model Checking
 
-* DUE: March 31 (Sunday), 2024 11:59 PM
+* DUE: November 11 (Monday), 2024 before start of class
 
 In Part 2, you will use a model checker named Java Pathfinder (JPF) to prove
 various correctness properties in your program.
@@ -1028,3 +1029,24 @@ individually on GradeScope.  If one of you are having issues with resolving
 a problem, ask your partner and try to get to a place where both of you get
 a full score.  When you get to this place, you can simply merge your
 submission into one submission of your choosing.
+
+# Exercise 5 - Static Analysis Extra Credit
+
+* DUE: December 16 (Monday), 2024 11:59 PM
+
+**GitHub Classroom Link:** TBD
+
+For this extra credit, you will learn how to use the Java Path Finder to debug
+nondeterministic programs due to parallelism.  You will encounter problems such
+as data races, deadlocks, and incorrect thread interleavings and debug them
+with the help of JPF.  An extra credit of 1 point out of 100 points for the
+entire course will be awarded to any group that is able to completely debug the
+program.
+
+The application that you will be debugging is a banking system with multiple
+customer accounts that allows the customer to transfer money between accounts.
+Each transfer transaction is performed in a thread that runs concurrently with
+the main thread, as well as other transaction threads.
+
+More details and relevant source code is available in the repository linked to
+the GitHub Classroom link posted above.
