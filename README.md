@@ -17,14 +17,13 @@
   * [Submission](#submission-1)
   * [GradeScope Feedback](#gradescope-feedback)
   * [Resources](#resources-1)
-- [Groupwork Plan](#groupwork-plan)
 - [Exercise 5 - Static Analysis Extra Credit](#exercise-5---static-analysis-extra-credit)
 
 # Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
 
-Fall Semester 2024 - Exercise 5
+Spring Semester 2025 - Exercise 5
 
-* DUE: November 4 (Monday), 2024 before start of class
+* DUE: March 25 (Tuesday), 2025 before start of class
 
 **GitHub Classroom Link:** TBD
 
@@ -258,16 +257,11 @@ this one (see next section).
 
 ## Submission
 
-Each pairwise group will do one submission to GradeScope, by *one member* of
-the group.  The submitting member will press the "View or edit group" link at
-the top-right corner of the assignment page after submission to add his/her
-partner.  
-
-When you
-are done, submit your github repository to GradeScope at the **Exercise 5 Part
-1 GitHub** link.  Once you submit, GradeScope will run the autograder to grade
-you and give feedback.  If you get deductions, fix your code based on the
-feedback and resubmit.  Repeat until you don't get deductions.
+When you are done, submit your github repository to GradeScope at the
+**Exercise 5 Part 1 GitHub** link.  Once you submit, GradeScope will run the
+autograder to grade you and give feedback.  If you get deductions, fix your
+code based on the feedback and resubmit.  Repeat until you don't get
+deductions.
 
 If you don't get any more warnings you've done your job.  Otherwise, it is -1
 point for each CheckStyle or SpotBugs warning.
@@ -282,7 +276,7 @@ https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
 
 # Exercise 5 - Static Analysis Part 2: Model Checking
 
-* DUE: November 11 (Monday), 2024 before start of class
+* DUE: April 1 (Tuesday), 2025 before start of class
 
 In Part 2, you will use a model checker named Java Pathfinder (JPF) to prove
 various correctness properties in your program.
@@ -1020,19 +1014,9 @@ http://javapathfinder.sourceforge.net/
 * Java Path Finder Verify API:  
 https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 
-# Groupwork Plan
-
-I expect each group member to experience Java Path Finder for him/herself.
-I created individual repositories for each of you, so that you can find the
-errors and debug at your own pace.  You can also submit your repositories
-individually on GradeScope.  If one of you are having issues with resolving
-a problem, ask your partner and try to get to a place where both of you get
-a full score.  When you get to this place, you can simply merge your
-submission into one submission of your choosing.
-
 # Exercise 5 - Static Analysis Extra Credit
 
-* DUE: December 16 (Monday), 2024 11:59 PM
+* DUE: April 30 (Wednesday), 2025 11:59 PM
 
 **GitHub Classroom Link:** TBD
 
