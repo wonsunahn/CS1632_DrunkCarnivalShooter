@@ -1018,7 +1018,7 @@ https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 
 * DUE: December 12 (Friday), 2025 11:59 PM
 
-**GitHub Classroom Link:** TBD
+**GitHub Classroom Link:** https://classroom.github.com/a/5ZGGANv7
 
 For this extra credit, you will learn how to use the Java Path Finder to debug
 nondeterministic programs due to parallelism.  You will encounter problems such
