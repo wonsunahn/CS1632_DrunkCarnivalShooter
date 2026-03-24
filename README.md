@@ -21,9 +21,9 @@
 
 # Exercise 5 - Static Analysis Part 1: Linters and Bug Finders
 
-Fall Semester 2025 - Exercise 5
+Spring Semester 2026 - Exercise 5
 
-* DUE: Movember 3 (Monday), 2025 before start of class
+* DUE: March 31 (Tuesday), 2026 before start of class
 
 **GitHub Classroom Link:** TBD
 
@@ -276,7 +276,7 @@ https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
 
 # Exercise 5 - Static Analysis Part 2: Model Checking
 
-* DUE: November 10 (Monday), 2025 before start of class
+* DUE: April 7 (Tuesday), 2026 before start of class
 
 In Part 2, you will use a model checker named Java Pathfinder (JPF) to prove
 various correctness properties in your program.
@@ -1016,9 +1016,9 @@ https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 
 # Exercise 5 - Static Analysis Extra Credit
 
-* DUE: December 12 (Friday), 2025 11:59 PM
+* DUE: May 1 (Friday), 2026 11:59 PM
 
-**GitHub Classroom Link:** https://classroom.github.com/a/5ZGGANv7
+**GitHub Classroom Link:** TBD
 
 For this extra credit, you will learn how to use the Java Path Finder to debug
 nondeterministic programs due to parallelism.  You will encounter problems such
